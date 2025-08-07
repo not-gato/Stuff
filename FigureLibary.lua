@@ -311,167 +311,237 @@ local function Xcj8cEhPK4S()
     end
 end
 
-local Ycj9dFiQL5T = Instance.new("ScreenGui")
-Ycj9dFiQL5T.Name = "BookshelfControlGui"
-Ycj9dFiQL5T.ResetOnSpawn = false
-Ycj9dFiQL5T.Parent = Paj8uWzHC4K
+local function Ycj9dFiQL5T()
+    local Zcj0eGjRM6U = Raj0wYbJE6M.Character
+    if not Zcj0eGjRM6U then
+        spawn(function()
+            Fbj4kMpXS0A("Character not found!", "error")
+        end)
+        return
+    end
+    
+    local Adj1fHkSN7V = Zcj0eGjRM6U:FindFirstChild("HumanoidRootPart")
+    if not Adj1fHkSN7V then
+        spawn(function()
+            Fbj4kMpXS0A("HumanoidRootPart not found!", "error")
+        end)
+        return
+    end
+    
+    local Bdj2gIlTO8W = CFrame.new(
+        0.88565439, 19.2949562, -109.371742,
+        -0.998881638, 0.00240474031, -0.0472193025,
+        -7.93140771e-08, 0.998705626, 0.0508628227,
+        0.0472804941, 0.0508059449, -0.997588754
+    )
+    
+    Adj1fHkSN7V.CFrame = Bdj2gIlTO8W
+    spawn(function()
+        Fbj4kMpXS0A("Teleported to Door", "success")
+    end)
+end
 
-local Zcj0eGjRM6U = Instance.new("UIScale")
-Zcj0eGjRM6U.Scale = 0.8
-Zcj0eGjRM6U.Parent = Ycj9dFiQL5T
+local function Cdj3hJmUP9X()
+    local Ddj4iKnVQ0Y = Raj0wYbJE6M.Character
+    if not Ddj4iKnVQ0Y then
+        spawn(function()
+            Fbj4kMpXS0A("Character not found!", "error")
+        end)
+        return
+    end
+    
+    local Edj5jLoWR1Z = Ddj4iKnVQ0Y:FindFirstChild("HumanoidRootPart")
+    if not Edj5jLoWR1Z then
+        spawn(function()
+            Fbj4kMpXS0A("HumanoidRootPart not found!", "error")
+        end)
+        return
+    end
+    
+    local Fdj6kMpXS2A = CFrame.new(
+        -53.6578979, 11.3413105, -21.9969749,
+        0.423553586, -0.90396452, -0.0587408952,
+        0.1525819, 0.00727360509, 0.988264024,
+        -0.892928481, -0.427545547, 0.141009375
+    )
+    
+    Edj5jLoWR1Z.CFrame = Fdj6kMpXS2A
+    spawn(function()
+        Fbj4kMpXS0A("Teleported to BPaper", "success")
+    end)
+end
 
-local Adj1fHkSN7V = Instance.new("Frame")
-Adj1fHkSN7V.Name = "MainFrame"
-Adj1fHkSN7V.Size = UDim2.new(0, 240, 0, 400)
-Adj1fHkSN7V.Position = UDim2.new(0, 20, 0.5, -200)
-Adj1fHkSN7V.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
-Adj1fHkSN7V.BorderSizePixel = 0
-Adj1fHkSN7V.Parent = Ycj9dFiQL5T
+local Gdj7lNqYT3B = Instance.new("ScreenGui")
+Gdj7lNqYT3B.Name = "BookshelfControlGui"
+Gdj7lNqYT3B.ResetOnSpawn = false
+Gdj7lNqYT3B.Parent = Paj8uWzHC4K
 
-local Bdj2gIlTO8W = Instance.new("UICorner")
-Bdj2gIlTO8W.CornerRadius = UDim.new(0, 15)
-Bdj2gIlTO8W.Parent = Adj1fHkSN7V
+local Hdj8mOrZU4C = Instance.new("UIScale")
+Hdj8mOrZU4C.Scale = 0.8
+Hdj8mOrZU4C.Parent = Gdj7lNqYT3B
 
-local Cdj3hJmUP9X = Instance.new("UIStroke")
-Cdj3hJmUP9X.Color = Color3.fromRGB(138, 43, 226)
-Cdj3hJmUP9X.Thickness = 2
-Cdj3hJmUP9X.Parent = Adj1fHkSN7V
+local Idj9nPsAV5D = Instance.new("Frame")
+Idj9nPsAV5D.Name = "MainFrame"
+Idj9nPsAV5D.Size = UDim2.new(0, 240, 0, 400)
+Idj9nPsAV5D.Position = UDim2.new(0, 20, 0.5, -200)
+Idj9nPsAV5D.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+Idj9nPsAV5D.BorderSizePixel = 0
+Idj9nPsAV5D.Parent = Gdj7lNqYT3B
 
-local Ddj4iKnVQ0Y = Instance.new("TextLabel")
-Ddj4iKnVQ0Y.Name = "TitleLabel"
-Ddj4iKnVQ0Y.Size = UDim2.new(1, 0, 0, 50)
-Ddj4iKnVQ0Y.Position = UDim2.new(0, 0, 0, 0)
-Ddj4iKnVQ0Y.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
-Ddj4iKnVQ0Y.BorderSizePixel = 0
-Ddj4iKnVQ0Y.Text = "Book Helper"
-Ddj4iKnVQ0Y.TextColor3 = Color3.fromRGB(255, 255, 255)
-Ddj4iKnVQ0Y.TextSize = 22
-Ddj4iKnVQ0Y.Font = Enum.Font.SourceSansBold
-Ddj4iKnVQ0Y.Parent = Adj1fHkSN7V
+local Jdj0oQtBW6E = Instance.new("UICorner")
+Jdj0oQtBW6E.CornerRadius = UDim.new(0, 15)
+Jdj0oQtBW6E.Parent = Idj9nPsAV5D
 
-local Edj5jLoWR1Z = Instance.new("UICorner")
-Edj5jLoWR1Z.CornerRadius = UDim.new(0, 15)
-Edj5jLoWR1Z.Parent = Ddj4iKnVQ0Y
+local Kdj1pRuCX7F = Instance.new("UIStroke")
+Kdj1pRuCX7F.Color = Color3.fromRGB(138, 43, 226)
+Kdj1pRuCX7F.Thickness = 2
+Kdj1pRuCX7F.Parent = Idj9nPsAV5D
 
-local Fdj6kMpXS2A = Instance.new("Frame")
-Fdj6kMpXS2A.Name = "ContentFrame"
-Fdj6kMpXS2A.Size = UDim2.new(1, -30, 1, -70)
-Fdj6kMpXS2A.Position = UDim2.new(0, 15, 0, 60)
-Fdj6kMpXS2A.BackgroundTransparency = 1
-Fdj6kMpXS2A.Parent = Adj1fHkSN7V
+local Ldj2qSvDY8G = Instance.new("TextLabel")
+Ldj2qSvDY8G.Name = "TitleLabel"
+Ldj2qSvDY8G.Size = UDim2.new(1, 0, 0, 50)
+Ldj2qSvDY8G.Position = UDim2.new(0, 0, 0, 0)
+Ldj2qSvDY8G.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
+Ldj2qSvDY8G.BorderSizePixel = 0
+Ldj2qSvDY8G.Text = "Book Helper"
+Ldj2qSvDY8G.TextColor3 = Color3.fromRGB(255, 255, 255)
+Ldj2qSvDY8G.TextSize = 22
+Ldj2qSvDY8G.Font = Enum.Font.SourceSansBold
+Ldj2qSvDY8G.Parent = Idj9nPsAV5D
 
-local Gdj7lNqYT3B = Instance.new("UIListLayout")
-Gdj7lNqYT3B.FillDirection = Enum.FillDirection.Vertical
-Gdj7lNqYT3B.HorizontalAlignment = Enum.HorizontalAlignment.Center
-Gdj7lNqYT3B.VerticalAlignment = Enum.VerticalAlignment.Top
-Gdj7lNqYT3B.Padding = UDim.new(0, 15)
-Gdj7lNqYT3B.Parent = Fdj6kMpXS2A
+local Mdj3rTwEZ9H = Instance.new("UICorner")
+Mdj3rTwEZ9H.CornerRadius = UDim.new(0, 15)
+Mdj3rTwEZ9H.Parent = Ldj2qSvDY8G
 
-local function Hdj8mOrZU4C(Idj9nPsAV5D, Jdj0oQtBW6E, Kdj1pRuCX7F)
-    local Ldj2qSvDY8G = Instance.new("TextButton")
-    Ldj2qSvDY8G.Size = UDim2.new(1, 0, 0, 50)
-    Ldj2qSvDY8G.BackgroundColor3 = Jdj0oQtBW6E
-    Ldj2qSvDY8G.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Ldj2qSvDY8G.Text = Idj9nPsAV5D
-    Ldj2qSvDY8G.Font = Enum.Font.SourceSansBold
-    Ldj2qSvDY8G.TextSize = 16
-    Ldj2qSvDY8G.BorderSizePixel = 0
-    Ldj2qSvDY8G.Parent = Fdj6kMpXS2A
+local Ndj4sUxFA0I = Instance.new("ScrollingFrame")
+Ndj4sUxFA0I.Name = "ScrollFrame"
+Ndj4sUxFA0I.Size = UDim2.new(1, -30, 1, -70)
+Ndj4sUxFA0I.Position = UDim2.new(0, 15, 0, 60)
+Ndj4sUxFA0I.BackgroundTransparency = 1
+Ndj4sUxFA0I.BorderSizePixel = 0
+Ndj4sUxFA0I.ScrollBarThickness = 6
+Ndj4sUxFA0I.ScrollBarImageColor3 = Color3.fromRGB(138, 43, 226)
+Ndj4sUxFA0I.CanvasSize = UDim2.new(0, 0, 0, 0)
+Ndj4sUxFA0I.Parent = Idj9nPsAV5D
 
-    local Mdj3rTwEZ9H = Instance.new("UICorner")
-    Mdj3rTwEZ9H.CornerRadius = UDim.new(0, 10)
-    Mdj3rTwEZ9H.Parent = Ldj2qSvDY8G
+local Odj5tVyGB1J = Instance.new("UIListLayout")
+Odj5tVyGB1J.FillDirection = Enum.FillDirection.Vertical
+Odj5tVyGB1J.HorizontalAlignment = Enum.HorizontalAlignment.Center
+Odj5tVyGB1J.VerticalAlignment = Enum.VerticalAlignment.Top
+Odj5tVyGB1J.Padding = UDim.new(0, 15)
+Odj5tVyGB1J.Parent = Ndj4sUxFA0I
 
-    local Ndj4sUxFA0I = Instance.new("UIStroke")
-    Ndj4sUxFA0I.Color = Color3.fromRGB(138, 43, 226)
-    Ndj4sUxFA0I.Transparency = 0.7
-    Ndj4sUxFA0I.Thickness = 1
-    Ndj4sUxFA0I.Parent = Ldj2qSvDY8G
+Odj5tVyGB1J:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    Ndj4sUxFA0I.CanvasSize = UDim2.new(0, 0, 0, Odj5tVyGB1J.AbsoluteContentSize.Y + 20)
+end)
 
-    local Odj5tVyGB1J = Ldj2qSvDY8G.Size
-    local Pdj6uWzHC2K = Ldj2qSvDY8G.BackgroundColor3
+local function Pdj6uWzHC2K(Qdj7vXaID3L, Rdj8wYbJE4M, Sdj9xZcKF5N)
+    local Tdj0yAdLG6O = Instance.new("TextButton")
+    Tdj0yAdLG6O.Size = UDim2.new(1, 0, 0, 50)
+    Tdj0yAdLG6O.BackgroundColor3 = Rdj8wYbJE4M
+    Tdj0yAdLG6O.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Tdj0yAdLG6O.Text = Qdj7vXaID3L
+    Tdj0yAdLG6O.Font = Enum.Font.SourceSansBold
+    Tdj0yAdLG6O.TextSize = 16
+    Tdj0yAdLG6O.BorderSizePixel = 0
+    Tdj0yAdLG6O.Parent = Ndj4sUxFA0I
 
-    Ldj2qSvDY8G.MouseButton1Down:Connect(function()
+    local Udj1zBeMH7P = Instance.new("UICorner")
+    Udj1zBeMH7P.CornerRadius = UDim.new(0, 10)
+    Udj1zBeMH7P.Parent = Tdj0yAdLG6O
+
+    local Vdj2aCfNI8Q = Instance.new("UIStroke")
+    Vdj2aCfNI8Q.Color = Color3.fromRGB(138, 43, 226)
+    Vdj2aCfNI8Q.Transparency = 0.7
+    Vdj2aCfNI8Q.Thickness = 1
+    Vdj2aCfNI8Q.Parent = Tdj0yAdLG6O
+
+    local Wdj3bDgOJ9R = Tdj0yAdLG6O.Size
+    local Xdj4cEhPK0S = Tdj0yAdLG6O.BackgroundColor3
+
+    Tdj0yAdLG6O.MouseButton1Down:Connect(function()
         Cbj1hJmUP7X("6895079853")
-        local Qdj7vXaID3L = UDim2.new(Odj5tVyGB1J.X.Scale * 0.96, Odj5tVyGB1J.X.Offset, Odj5tVyGB1J.Y.Scale * 0.96, Odj5tVyGB1J.Y.Offset)
-        Naj6sUxFA2I:Create(Ldj2qSvDY8G, Yaj7dFiQL3T, {
-            Size = Qdj7vXaID3L,
+        local Ydj5dFiQL1T = UDim2.new(Wdj3bDgOJ9R.X.Scale * 0.96, Wdj3bDgOJ9R.X.Offset, Wdj3bDgOJ9R.Y.Scale * 0.96, Wdj3bDgOJ9R.Y.Offset)
+        Naj6sUxFA2I:Create(Tdj0yAdLG6O, Yaj7dFiQL3T, {
+            Size = Ydj5dFiQL1T,
             BackgroundColor3 = Color3.new(
-                Pdj6uWzHC2K.R * 0.7,
-                Pdj6uWzHC2K.G * 0.7,
-                Pdj6uWzHC2K.B * 0.7
+                Xdj4cEhPK0S.R * 0.7,
+                Xdj4cEhPK0S.G * 0.7,
+                Xdj4cEhPK0S.B * 0.7
             )
         }):Play()
     end)
 
-    Ldj2qSvDY8G.MouseButton1Up:Connect(function()
-        Naj6sUxFA2I:Create(Ldj2qSvDY8G, Zaj8eGjRM4U, {
-            Size = Odj5tVyGB1J,
-            BackgroundColor3 = Pdj6uWzHC2K
+    Tdj0yAdLG6O.MouseButton1Up:Connect(function()
+        Naj6sUxFA2I:Create(Tdj0yAdLG6O, Zaj8eGjRM4U, {
+            Size = Wdj3bDgOJ9R,
+            BackgroundColor3 = Xdj4cEhPK0S
         }):Play()
     end)
 
-    Ldj2qSvDY8G.MouseEnter:Connect(function()
-        Naj6sUxFA2I:Create(Ldj2qSvDY8G, TweenInfo.new(0.2), {
+    Tdj0yAdLG6O.MouseEnter:Connect(function()
+        Naj6sUxFA2I:Create(Tdj0yAdLG6O, TweenInfo.new(0.2), {
             BackgroundColor3 = Color3.new(
-                math.min(Pdj6uWzHC2K.R * 1.2, 1),
-                math.min(Pdj6uWzHC2K.G * 1.2, 1),
-                math.min(Pdj6uWzHC2K.B * 1.2, 1)
+                math.min(Xdj4cEhPK0S.R * 1.2, 1),
+                math.min(Xdj4cEhPK0S.G * 1.2, 1),
+                math.min(Xdj4cEhPK0S.B * 1.2, 1)
             )
         }):Play()
-        Naj6sUxFA2I:Create(Ndj4sUxFA0I, TweenInfo.new(0.2), {
+        Naj6sUxFA2I:Create(Vdj2aCfNI8Q, TweenInfo.new(0.2), {
             Transparency = 0.3
         }):Play()
     end)
 
-    Ldj2qSvDY8G.MouseLeave:Connect(function()
-        Naj6sUxFA2I:Create(Ldj2qSvDY8G, TweenInfo.new(0.2), {
-            BackgroundColor3 = Pdj6uWzHC2K
+    Tdj0yAdLG6O.MouseLeave:Connect(function()
+        Naj6sUxFA2I:Create(Tdj0yAdLG6O, TweenInfo.new(0.2), {
+            BackgroundColor3 = Xdj4cEhPK0S
         }):Play()
-        Naj6sUxFA2I:Create(Ndj4sUxFA0I, TweenInfo.new(0.2), {
+        Naj6sUxFA2I:Create(Vdj2aCfNI8Q, TweenInfo.new(0.2), {
             Transparency = 0.7
         }):Play()
     end)
 
-    Ldj2qSvDY8G.MouseButton1Click:Connect(Kdj1pRuCX7F)
+    Tdj0yAdLG6O.MouseButton1Click:Connect(Sdj9xZcKF5N)
 
-    return Ldj2qSvDY8G
+    return Tdj0yAdLG6O
 end
 
-local Rdj8wYbJE4M = Hdj8mOrZU4C("Find Books", Color3.fromRGB(40, 40, 50), Ubj9zBeMH5P)
-local Sdj9xZcKF5N = Hdj8mOrZU4C("Destroy Highlights", Color3.fromRGB(40, 40, 50), Pbj4uWzHC0K)
-local Tdj0yAdLG6O = Hdj8mOrZU4C("Start Figure Track", Color3.fromRGB(40, 40, 50), Ocj9tVyGB5J)
-local Udj1zBeMH7P = Hdj8mOrZU4C("Stop Figure Track", Color3.fromRGB(40, 40, 50), Xcj8cEhPK4S)
-local Vdj2aCfNI8Q = Hdj8mOrZU4C("Revive", Color3.fromRGB(40, 40, 50), Jcj4oQtBW0E)
+local Zdj6eGjRM2U = Pdj6uWzHC2K("Find Books", Color3.fromRGB(40, 40, 50), Ubj9zBeMH5P)
+local Aej7fHkSN3V = Pdj6uWzHC2K("Destroy Highlights", Color3.fromRGB(40, 40, 50), Pbj4uWzHC0K)
+local Bej8gIlTO4W = Pdj6uWzHC2K("Start Figure Track", Color3.fromRGB(40, 40, 50), Ocj9tVyGB5J)
+local Cej9hJmUP5X = Pdj6uWzHC2K("Stop Figure Track", Color3.fromRGB(40, 40, 50), Xcj8cEhPK4S)
+local Dej0iKnVQ6Y = Pdj6uWzHC2K("Revive", Color3.fromRGB(40, 40, 50), Jcj4oQtBW0E)
+local Eej1jLoWR7Z = Pdj6uWzHC2K("TP To Door", Color3.fromRGB(40, 40, 50), Ycj9dFiQL5T)
+local Fej2kMpXS8A = Pdj6uWzHC2K("TP To BPaper", Color3.fromRGB(40, 40, 50), Cdj3hJmUP9X)
 
-local Wdj3bDgOJ9R = nil
-local Xdj4cEhPK0S = 0.25
-local Ydj5dFiQL1T = nil
-local Zdj6eGjRM2U = nil
+local Gej3lNqYT9B = nil
+local Hej4mOrZU0C = 0.25
+local Iej5nPsAV1D = nil
+local Jej6oQtBW2E = nil
 
-local function Aej7fHkSN3V(Bej8gIlTO4W)
-    local Cej9hJmUP5X = Bej8gIlTO4W.Position - Ydj5dFiQL1T
-    local Dej0iKnVQ6Y = UDim2.new(Zdj6eGjRM2U.X.Scale, Zdj6eGjRM2U.X.Offset + Cej9hJmUP5X.X, Zdj6eGjRM2U.Y.Scale, Zdj6eGjRM2U.Y.Offset + Cej9hJmUP5X.Y)
-    Naj6sUxFA2I:Create(Adj1fHkSN7V, TweenInfo.new(Xdj4cEhPK0S), {Position = Dej0iKnVQ6Y}):Play()
+local function Kej7pRuCX3F(Lej8qSvDY4G)
+    local Mej9rTwEZ5H = Lej8qSvDY4G.Position - Iej5nPsAV1D
+    local Nej0sUxFA6I = UDim2.new(Jej6oQtBW2E.X.Scale, Jej6oQtBW2E.X.Offset + Mej9rTwEZ5H.X, Jej6oQtBW2E.Y.Scale, Jej6oQtBW2E.Y.Offset + Mej9rTwEZ5H.Y)
+    Naj6sUxFA2I:Create(Idj9nPsAV5D, TweenInfo.new(Hej4mOrZU0C), {Position = Nej0sUxFA6I}):Play()
 end
 
-Ddj4iKnVQ0Y.InputBegan:Connect(function(Eej1jLoWR7Z)
-    if (Eej1jLoWR7Z.UserInputType == Enum.UserInputType.MouseButton1 or Eej1jLoWR7Z.UserInputType == Enum.UserInputType.Touch) then
-        Wdj3bDgOJ9R = true
-        Ydj5dFiQL1T = Eej1jLoWR7Z.Position
-        Zdj6eGjRM2U = Adj1fHkSN7V.Position
-        Eej1jLoWR7Z.Changed:Connect(function()
-            if Eej1jLoWR7Z.UserInputState == Enum.UserInputState.End then
-                Wdj3bDgOJ9R = false
+Ldj2qSvDY8G.InputBegan:Connect(function(Oej1tVyGB7J)
+    if (Oej1tVyGB7J.UserInputType == Enum.UserInputType.MouseButton1 or Oej1tVyGB7J.UserInputType == Enum.UserInputType.Touch) then
+        Gej3lNqYT9B = true
+        Iej5nPsAV1D = Oej1tVyGB7J.Position
+        Jej6oQtBW2E = Idj9nPsAV5D.Position
+        Oej1tVyGB7J.Changed:Connect(function()
+            if Oej1tVyGB7J.UserInputState == Enum.UserInputState.End then
+                Gej3lNqYT9B = false
             end
         end)
     end
 end)
 
-Ddj4iKnVQ0Y.InputChanged:Connect(function(Fej2kMpXS8A)
-    if (Fej2kMpXS8A.UserInputType == Enum.UserInputType.MouseMovement or Fej2kMpXS8A.UserInputType == Enum.UserInputType.Touch) then
-        if Wdj3bDgOJ9R then
-            Aej7fHkSN3V(Fej2kMpXS8A)
+Ldj2qSvDY8G.InputChanged:Connect(function(Pej2uWzHC8K)
+    if (Pej2uWzHC8K.UserInputType == Enum.UserInputType.MouseMovement or Pej2uWzHC8K.UserInputType == Enum.UserInputType.Touch) then
+        if Gej3lNqYT9B then
+            Kej7pRuCX3F(Pej2uWzHC8K)
         end
     end
 end)
