@@ -1,5 +1,3 @@
--- yes this is ai generated but, who cares
-
 local HpYD7MGEEt4 = game:GetService("Players")
 local KqZF8NHFFu5 = game:GetService("ReplicatedStorage")
 local LrAG9OIGGv6 = game:GetService("UserInputService")
@@ -598,7 +596,7 @@ local function AgPV2DXUUk9()
     end
 end
 
-local function BhQW9EYVVl6()
+local function DisableMultiEntityESP()
     if not NtCI7QKHHx4 then
         spawn(function()
             CiRX2FZWWm9("Multi-Entity ESP is not active!", "warning")
@@ -808,7 +806,7 @@ local function JpYE7MGDDt4()
     end)
 end
 
-local function NtCI7QKHHx4Stop()
+local function StopMultiEntityTracking()
     if not OuDJ8RLIIy5 then
         spawn(function()
             CiRX2FZWWm9("Multi-Entity tracking is not active!", "warning")
@@ -827,7 +825,7 @@ local function NtCI7QKHHx4Stop()
     end
 end
 
-local function OuDJ0RLIIy7()
+local function TeleportToDoor()
     local PvEK1SMJJz8 = SyHN6VPNNc3.Character
     if not PvEK1SMJJz8 then
         spawn(function()
@@ -850,7 +848,7 @@ local function OuDJ0RLIIy7()
     end)
 end
 
-local function RxGM3UOLLb0()
+local function TeleportToBPaper()
     local SyHN4VPMMc1 = SyHN6VPNNc3.Character
     if not SyHN4VPMMc1 then
         spawn(function()
@@ -880,7 +878,7 @@ local function RxGM3UOLLb0()
     end)
 end
 
-local function VbKQ7YSPPf4()
+local function ResetWalkSpeed()
     BhQW5EYVVl2 = false
     if ZfOU3CWTTj0 then
         ZfOU3CWTTj0:Disconnect()
@@ -902,7 +900,7 @@ local function VbKQ7YSPPf4()
     end
 end
 
-local function YeNT0BVSSi7(ZfOU1CWTTj8)
+local function SetWalkSpeed(ZfOU1CWTTj8)
     local AgPV2DXUUk9 = tonumber(ZfOU1CWTTj8)
     if not AgPV2DXUUk9 then
         spawn(function()
@@ -930,7 +928,7 @@ local function YeNT0BVSSi7(ZfOU1CWTTj8)
     end)
 end
 
-local function BhQW3EYVVl0()
+local function BreakVelocity()
     local CiRX4FZWWm1 = SyHN6VPNNc3.Character
     if not CiRX4FZWWm1 then
         spawn(function()
@@ -978,7 +976,7 @@ local function BhQW3EYVVl0()
     end
 end
 
-local function IoXD0LFCCs7()
+local function EnableFullBright()
     if PvEK9SMJJz6 then
         spawn(function()
             CiRX2FZWWm9("Full Bright is already active!", "warning")
@@ -1000,7 +998,7 @@ local function IoXD0LFCCs7()
     end)
 end
 
-local function JpYE1MGDDt8()
+local function DisableFullBright()
     if not PvEK9SMJJz6 then
         spawn(function()
             CiRX2FZWWm9("Full Bright is not active!", "warning")
@@ -1022,7 +1020,7 @@ local function JpYE1MGDDt8()
     end)
 end
 
-local function KqZF2NHEEu9()
+local function EnableNoclip()
     if QwFL0TNKKa7 then
         spawn(function()
             CiRX2FZWWm9("Noclip is already active!", "warning")
@@ -1048,7 +1046,7 @@ local function KqZF2NHEEu9()
     end)
 end
 
-local function MsBH4PJGGw1()
+local function DisableNoclip()
     if not QwFL0TNKKa7 then
         spawn(function()
             CiRX2FZWWm9("Noclip is not active!", "warning")
@@ -1078,363 +1076,363 @@ local function MsBH4PJGGw1()
 end
 
 -- GUI Creation
-local OuDJ6RLIIy3 = Instance.new("ScreenGui")
-OuDJ6RLIIy3.Name = "BookshelfControlGui"
-OuDJ6RLIIy3.ResetOnSpawn = false
-OuDJ6RLIIy3.Parent = PvEK3SMKKz0
+local MainScreenGui = Instance.new("ScreenGui")
+MainScreenGui.Name = "BookshelfControlGui"
+MainScreenGui.ResetOnSpawn = false
+MainScreenGui.Parent = PvEK3SMKKz0
 
-local PvEK7SMJJz4 = Instance.new("UIScale")
-PvEK7SMJJz4.Scale = 0.8
-PvEK7SMJJz4.Parent = OuDJ6RLIIy3
+local UIScaleMain = Instance.new("UIScale")
+UIScaleMain.Scale = 0.8
+UIScaleMain.Parent = MainScreenGui
 
-local QwFL8TNKKa5 = Instance.new("Frame")
-QwFL8TNKKa5.Name = "MainFrame"
-QwFL8TNKKa5.Size = UDim2.new(0, 240, 0, 280)
-QwFL8TNKKa5.Position = UDim2.new(0, 20, 0.5, -140)
-QwFL8TNKKa5.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
-QwFL8TNKKa5.BorderSizePixel = 0
-QwFL8TNKKa5.BackgroundTransparency = 1
-QwFL8TNKKa5.Parent = OuDJ6RLIIy3
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 240, 0, 280)
+MainFrame.Position = UDim2.new(0, 20, 0.5, -140)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+MainFrame.BorderSizePixel = 0
+MainFrame.BackgroundTransparency = 1
+MainFrame.Parent = MainScreenGui
 
-NtCI1QKIIx8:Create(QwFL8TNKKa5, UaJP4XROOe1, {
+NtCI1QKIIx8:Create(MainFrame, UaJP4XROOe1, {
     BackgroundTransparency = 0
 }):Play()
 
-local RxGM9UOLLb6 = Instance.new("UICorner")
-RxGM9UOLLb6.CornerRadius = UDim.new(0, 15)
-RxGM9UOLLb6.Parent = QwFL8TNKKa5
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 15)
+MainCorner.Parent = MainFrame
 
-local SyHN0VPMMc7 = Instance.new("UIStroke")
-SyHN0VPMMc7.Color = Color3.fromRGB(138, 43, 226)
-SyHN0VPMMc7.Thickness = 2
-SyHN0VPMMc7.Parent = QwFL8TNKKa5
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(138, 43, 226)
+MainStroke.Thickness = 2
+MainStroke.Parent = MainFrame
 
-local TzIO1WQNNd8 = Instance.new("TextLabel")
-TzIO1WQNNd8.Name = "TitleLabel"
-TzIO1WQNNd8.Size = UDim2.new(1, 0, 0, 50)
-TzIO1WQNNd8.Position = UDim2.new(0, 0, 0, 0)
-TzIO1WQNNd8.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
-TzIO1WQNNd8.BorderSizePixel = 0
-TzIO1WQNNd8.Text = "Figure's Library"
-TzIO1WQNNd8.TextColor3 = Color3.fromRGB(255, 255, 255)
-TzIO1WQNNd8.TextSize = 22
-TzIO1WQNNd8.Font = Enum.Font.SourceSansBold
-TzIO1WQNNd8.TextTransparency = 1
-TzIO1WQNNd8.Parent = QwFL8TNKKa5
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Name = "TitleLabel"
+TitleLabel.Size = UDim2.new(1, 0, 0, 50)
+TitleLabel.Position = UDim2.new(0, 0, 0, 0)
+TitleLabel.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
+TitleLabel.BorderSizePixel = 0
+TitleLabel.Text = "Figure's Library"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.TextSize = 22
+TitleLabel.Font = Enum.Font.SourceSansBold
+TitleLabel.TextTransparency = 1
+TitleLabel.Parent = MainFrame
 
-NtCI1QKIIx8:Create(TzIO1WQNNd8, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+NtCI1QKIIx8:Create(TitleLabel, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
     TextTransparency = 0
 }):Play()
 
-local UaJP2XROOe9 = Instance.new("UICorner")
-UaJP2XROOe9.CornerRadius = UDim.new(0, 15)
-UaJP2XROOe9.Parent = TzIO1WQNNd8
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 15)
+TitleCorner.Parent = TitleLabel
 
-local VbKQ3YSPPf0 = Instance.new("TextButton")
-VbKQ3YSPPf0.Name = "MinimizeButton"
-VbKQ3YSPPf0.Size = UDim2.new(0, 30, 0, 30)
-VbKQ3YSPPf0.Position = UDim2.new(0, 10, 0, 10)
-VbKQ3YSPPf0.BackgroundTransparency = 1
-VbKQ3YSPPf0.Text = "-"
-VbKQ3YSPPf0.TextColor3 = Color3.fromRGB(255, 255, 255)
-VbKQ3YSPPf0.TextSize = 24
-VbKQ3YSPPf0.Font = Enum.Font.SourceSansBold
-VbKQ3YSPPf0.TextTransparency = 1
-VbKQ3YSPPf0.Parent = TzIO1WQNNd8
+local MinimizeButton = Instance.new("TextButton")
+MinimizeButton.Name = "MinimizeButton"
+MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
+MinimizeButton.Position = UDim2.new(0, 10, 0, 10)
+MinimizeButton.BackgroundTransparency = 1
+MinimizeButton.Text = "-"
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeButton.TextSize = 24
+MinimizeButton.Font = Enum.Font.SourceSansBold
+MinimizeButton.TextTransparency = 1
+MinimizeButton.Parent = TitleLabel
 
-NtCI1QKIIx8:Create(VbKQ3YSPPf0, TweenInfo.new(0.7, Enum.EasingStyle.Elastic, Enum.EasingDirection.Out), {
+NtCI1QKIIx8:Create(MinimizeButton, TweenInfo.new(0.7, Enum.EasingStyle.Elastic, Enum.EasingDirection.Out), {
     TextTransparency = 0
 }):Play()
 
-local WcLR4ZTQQg1 = Instance.new("ScrollingFrame")
-WcLR4ZTQQg1.Name = "Page1ScrollFrame"
-WcLR4ZTQQg1.Size = UDim2.new(1, -30, 1, -70)
-WcLR4ZTQQg1.Position = UDim2.new(0, 15, 0, 60)
-WcLR4ZTQQg1.BackgroundTransparency = 1
-WcLR4ZTQQg1.BorderSizePixel = 0
-WcLR4ZTQQg1.ScrollBarThickness = 6
-WcLR4ZTQQg1.ScrollBarImageColor3 = Color3.fromRGB(138, 43, 226)
-WcLR4ZTQQg1.CanvasSize = UDim2.new(0, 0, 0, 0)
-WcLR4ZTQQg1.Parent = QwFL8TNKKa5
+local Page1ScrollFrame = Instance.new("ScrollingFrame")
+Page1ScrollFrame.Name = "Page1ScrollFrame"
+Page1ScrollFrame.Size = UDim2.new(1, -30, 1, -70)
+Page1ScrollFrame.Position = UDim2.new(0, 15, 0, 60)
+Page1ScrollFrame.BackgroundTransparency = 1
+Page1ScrollFrame.BorderSizePixel = 0
+Page1ScrollFrame.ScrollBarThickness = 6
+Page1ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(138, 43, 226)
+Page1ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+Page1ScrollFrame.Parent = MainFrame
 
-local XdMS5AURRh2 = Instance.new("UIListLayout")
-XdMS5AURRh2.FillDirection = Enum.FillDirection.Vertical
-XdMS5AURRh2.HorizontalAlignment = Enum.HorizontalAlignment.Center
-XdMS5AURRh2.VerticalAlignment = Enum.VerticalAlignment.Top
-XdMS5AURRh2.Padding = UDim.new(0, 15)
-XdMS5AURRh2.Parent = WcLR4ZTQQg1
+local Page1Layout = Instance.new("UIListLayout")
+Page1Layout.FillDirection = Enum.FillDirection.Vertical
+Page1Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+Page1Layout.VerticalAlignment = Enum.VerticalAlignment.Top
+Page1Layout.Padding = UDim.new(0, 15)
+Page1Layout.Parent = Page1ScrollFrame
 
-XdMS5AURRh2:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    WcLR4ZTQQg1.CanvasSize = UDim2.new(0, 0, 0, XdMS5AURRh2.AbsoluteContentSize.Y + 50)
+Page1Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    Page1ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, Page1Layout.AbsoluteContentSize.Y + 50)
 end)
 
-local YeNT6BVSSi3 = Instance.new("ScrollingFrame")
-YeNT6BVSSi3.Name = "Page2ScrollFrame"
-YeNT6BVSSi3.Size = UDim2.new(1, -30, 1, -70)
-YeNT6BVSSi3.Position = UDim2.new(0, 15, 0, 60)
-YeNT6BVSSi3.BackgroundTransparency = 1
-YeNT6BVSSi3.BorderSizePixel = 0
-YeNT6BVSSi3.ScrollBarThickness = 6
-YeNT6BVSSi3.ScrollBarImageColor3 = Color3.fromRGB(138, 43, 226)
-YeNT6BVSSi3.CanvasSize = UDim2.new(0, 0, 0, 0)
-YeNT6BVSSi3.Visible = false
-YeNT6BVSSi3.Parent = QwFL8TNKKa5
+local Page2ScrollFrame = Instance.new("ScrollingFrame")
+Page2ScrollFrame.Name = "Page2ScrollFrame"
+Page2ScrollFrame.Size = UDim2.new(1, -30, 1, -70)
+Page2ScrollFrame.Position = UDim2.new(0, 15, 0, 60)
+Page2ScrollFrame.BackgroundTransparency = 1
+Page2ScrollFrame.BorderSizePixel = 0
+Page2ScrollFrame.ScrollBarThickness = 6
+Page2ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(138, 43, 226)
+Page2ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+Page2ScrollFrame.Visible = false
+Page2ScrollFrame.Parent = MainFrame
 
-local ZfOU7CWTTj4 = Instance.new("UIListLayout")
-ZfOU7CWTTj4.FillDirection = Enum.FillDirection.Vertical
-ZfOU7CWTTj4.HorizontalAlignment = Enum.HorizontalAlignment.Center
-ZfOU7CWTTj4.VerticalAlignment = Enum.VerticalAlignment.Top
-ZfOU7CWTTj4.Padding = UDim.new(0, 15)
-ZfOU7CWTTj4.Parent = YeNT6BVSSi3
+local Page2Layout = Instance.new("UIListLayout")
+Page2Layout.FillDirection = Enum.FillDirection.Vertical
+Page2Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+Page2Layout.VerticalAlignment = Enum.VerticalAlignment.Top
+Page2Layout.Padding = UDim.new(0, 15)
+Page2Layout.Parent = Page2ScrollFrame
 
-ZfOU7CWTTj4:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    YeNT6BVSSi3.CanvasSize = UDim2.new(0, 0, 0, ZfOU7CWTTj4.AbsoluteContentSize.Y + 50)
+Page2Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    Page2ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, Page2Layout.AbsoluteContentSize.Y + 50)
 end)
 
-local AgPV8DXUUk5 = Instance.new("TextBox")
-AgPV8DXUUk5.Name = "WalkSpeedTextBox"
-AgPV8DXUUk5.Size = UDim2.new(1, 0, 0, 50)
-AgPV8DXUUk5.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-AgPV8DXUUk5.TextColor3 = Color3.fromRGB(255, 255, 255)
-AgPV8DXUUk5.PlaceholderText = "Enter WalkSpeed..."
-AgPV8DXUUk5.Text = ""
-AgPV8DXUUk5.Font = Enum.Font.SourceSans
-AgPV8DXUUk5.TextSize = 16
-AgPV8DXUUk5.BorderSizePixel = 0
-AgPV8DXUUk5.LayoutOrder = 0
-AgPV8DXUUk5.Parent = YeNT6BVSSi3
+local WalkSpeedTextBox = Instance.new("TextBox")
+WalkSpeedTextBox.Name = "WalkSpeedTextBox"
+WalkSpeedTextBox.Size = UDim2.new(1, 0, 0, 50)
+WalkSpeedTextBox.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+WalkSpeedTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+WalkSpeedTextBox.PlaceholderText = "Enter WalkSpeed..."
+WalkSpeedTextBox.Text = ""
+WalkSpeedTextBox.Font = Enum.Font.SourceSans
+WalkSpeedTextBox.TextSize = 16
+WalkSpeedTextBox.BorderSizePixel = 0
+WalkSpeedTextBox.LayoutOrder = 0
+WalkSpeedTextBox.Parent = Page2ScrollFrame
 
-local BhQW9EYVVl6 = Instance.new("UICorner")
-BhQW9EYVVl6.CornerRadius = UDim.new(0, 10)
-BhQW9EYVVl6.Parent = AgPV8DXUUk5
+local TextBoxCorner = Instance.new("UICorner")
+TextBoxCorner.CornerRadius = UDim.new(0, 10)
+TextBoxCorner.Parent = WalkSpeedTextBox
 
-local CiRX0FZWWm7 = Instance.new("UIStroke")
-CiRX0FZWWm7.Color = Color3.fromRGB(138, 43, 226)
-CiRX0FZWWm7.Transparency = 0.7
-CiRX0FZWWm7.Thickness = 1
-CiRX0FZWWm7.Parent = AgPV8DXUUk5
+local TextBoxStroke = Instance.new("UIStroke")
+TextBoxStroke.Color = Color3.fromRGB(138, 43, 226)
+TextBoxStroke.Transparency = 0.7
+TextBoxStroke.Thickness = 1
+TextBoxStroke.Parent = WalkSpeedTextBox
 
-local function DjSY1GAXXn8(EkTZ2HBYYo9, FlUA3ICZZp0, GmVB4JDAaq1)
-    local HnWC5KEBBr2 = Instance.new("TextButton")
-    HnWC5KEBBr2.Size = UDim2.new(1, 0, 0, 50)
-    HnWC5KEBBr2.BackgroundColor3 = FlUA3ICZZp0
-    HnWC5KEBBr2.TextColor3 = Color3.fromRGB(255, 255, 255)
-    HnWC5KEBBr2.Text = EkTZ2HBYYo9
-    HnWC5KEBBr2.Font = Enum.Font.SourceSansBold
-    HnWC5KEBBr2.TextSize = 16
-    HnWC5KEBBr2.BorderSizePixel = 0
-    HnWC5KEBBr2.BackgroundTransparency = 1
+local function CreateButton(buttonText, buttonColor, buttonFunction)
+    local newButton = Instance.new("TextButton")
+    newButton.Size = UDim2.new(1, 0, 0, 50)
+    newButton.BackgroundColor3 = buttonColor
+    newButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    newButton.Text = buttonText
+    newButton.Font = Enum.Font.SourceSansBold
+    newButton.TextSize = 16
+    newButton.BorderSizePixel = 0
+    newButton.BackgroundTransparency = 1
     
-    local IoXD6LFCCs3 = Instance.new("UICorner")
-    IoXD6LFCCs3.CornerRadius = UDim.new(0, 10)
-    IoXD6LFCCs3.Parent = HnWC5KEBBr2
+    local buttonCorner = Instance.new("UICorner")
+    buttonCorner.CornerRadius = UDim.new(0, 10)
+    buttonCorner.Parent = newButton
     
-    local JpYE7MGDDt4 = Instance.new("UIStroke")
-    JpYE7MGDDt4.Color = Color3.fromRGB(138, 43, 226)
-    JpYE7MGDDt4.Transparency = 0.7
-    JpYE7MGDDt4.Thickness = 1
-    JpYE7MGDDt4.Parent = HnWC5KEBBr2
+    local buttonStroke = Instance.new("UIStroke")
+    buttonStroke.Color = Color3.fromRGB(138, 43, 226)
+    buttonStroke.Transparency = 0.7
+    buttonStroke.Thickness = 1
+    buttonStroke.Parent = newButton
     
-    local KqZF8NHEEu5 = HnWC5KEBBr2.Size
-    local LrAG9OIFFv6 = HnWC5KEBBr2.BackgroundColor3
+    local originalSize = newButton.Size
+    local originalColor = newButton.BackgroundColor3
     
-    NtCI1QKIIx8:Create(HnWC5KEBBr2, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+    NtCI1QKIIx8:Create(newButton, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
         BackgroundTransparency = 0
     }):Play()
     
-    HnWC5KEBBr2.MouseButton1Down:Connect(function()
+    newButton.MouseButton1Down:Connect(function()
         ZfOU9CWTTj6("6895079853")
-        local MsBH0PJGGw7 = UDim2.new(KqZF8NHEEu5.X.Scale * 0.94, KqZF8NHEEu5.X.Offset, KqZF8NHEEu5.Y.Scale * 0.94, KqZF8NHEEu5.Y.Offset)
-        NtCI1QKIIx8:Create(HnWC5KEBBr2, RxGM1UOLLb8, {
-            Size = MsBH0PJGGw7,
+        local pressedSize = UDim2.new(originalSize.X.Scale * 0.94, originalSize.X.Offset, originalSize.Y.Scale * 0.94, originalSize.Y.Offset)
+        NtCI1QKIIx8:Create(newButton, RxGM1UOLLb8, {
+            Size = pressedSize,
             BackgroundColor3 = Color3.new(
-                LrAG9OIFFv6.R * 0.6,
-                LrAG9OIFFv6.G * 0.6,
-                LrAG9OIFFv6.B * 0.6
+                originalColor.R * 0.6,
+                originalColor.G * 0.6,
+                originalColor.B * 0.6
             )
         }):Play()
     end)
     
-    HnWC5KEBBr2.MouseButton1Up:Connect(function()
-        NtCI1QKIIx8:Create(HnWC5KEBBr2, SyHN2VPMMc9, {
-            Size = KqZF8NHEEu5,
-            BackgroundColor3 = LrAG9OIFFv6
+    newButton.MouseButton1Up:Connect(function()
+        NtCI1QKIIx8:Create(newButton, SyHN2VPMMc9, {
+            Size = originalSize,
+            BackgroundColor3 = originalColor
         }):Play()
     end)
     
-    HnWC5KEBBr2.MouseEnter:Connect(function()
-        NtCI1QKIIx8:Create(HnWC5KEBBr2, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+    newButton.MouseEnter:Connect(function()
+        NtCI1QKIIx8:Create(newButton, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
             BackgroundColor3 = Color3.new(
-                math.min(LrAG9OIFFv6.R * 1.3, 1),
-                math.min(LrAG9OIFFv6.G * 1.3, 1),
-                math.min(LrAG9OIFFv6.B * 1.3, 1)
+                math.min(originalColor.R * 1.3, 1),
+                math.min(originalColor.G * 1.3, 1),
+                math.min(originalColor.B * 1.3, 1)
             ),
-            Size = UDim2.new(KqZF8NHEEu5.X.Scale * 1.02, KqZF8NHEEu5.X.Offset, KqZF8NHEEu5.Y.Scale, KqZF8NHEEu5.Y.Offset)
+            Size = UDim2.new(originalSize.X.Scale * 1.02, originalSize.X.Offset, originalSize.Y.Scale, originalSize.Y.Offset)
         }):Play()
-        NtCI1QKIIx8:Create(JpYE7MGDDt4, TweenInfo.new(0.3), {
+        NtCI1QKIIx8:Create(buttonStroke, TweenInfo.new(0.3), {
             Transparency = 0.2
         }):Play()
     end)
     
-    HnWC5KEBBr2.MouseLeave:Connect(function()
-        NtCI1QKIIx8:Create(HnWC5KEBBr2, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            BackgroundColor3 = LrAG9OIFFv6,
-            Size = KqZF8NHEEu5
+    newButton.MouseLeave:Connect(function()
+        NtCI1QKIIx8:Create(newButton, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            BackgroundColor3 = originalColor,
+            Size = originalSize
         }):Play()
-        NtCI1QKIIx8:Create(JpYE7MGDDt4, TweenInfo.new(0.3), {
+        NtCI1QKIIx8:Create(buttonStroke, TweenInfo.new(0.3), {
             Transparency = 0.7
         }):Play()
     end)
     
-    HnWC5KEBBr2.MouseButton1Click:Connect(GmVB4JDAaq1)
-    return HnWC5KEBBr2
+    newButton.MouseButton1Click:Connect(buttonFunction)
+    return newButton
 end
 
 local function GoToNextPage()
-    WcLR4ZTQQg1.Visible = false
-    YeNT6BVSSi3.Visible = true
-    YeNT6BVSSi3.Position = UDim2.new(1, 15, 0, 60)
-    NtCI1QKIIx8:Create(YeNT6BVSSi3, VbKQ5YSPPf2, {
+    Page1ScrollFrame.Visible = false
+    Page2ScrollFrame.Visible = true
+    Page2ScrollFrame.Position = UDim2.new(1, 15, 0, 60)
+    NtCI1QKIIx8:Create(Page2ScrollFrame, VbKQ5YSPPf2, {
         Position = UDim2.new(0, 15, 0, 60)
     }):Play()
 end
 
 local function GoBackPage()
-    WcLR4ZTQQg1.Visible = true
-    YeNT6BVSSi3.Visible = false
-    WcLR4ZTQQg1.Position = UDim2.new(-1, 15, 0, 60)
-    NtCI1QKIIx8:Create(WcLR4ZTQQg1, VbKQ5YSPPf2, {
+    Page1ScrollFrame.Visible = true
+    Page2ScrollFrame.Visible = false
+    Page1ScrollFrame.Position = UDim2.new(-1, 15, 0, 60)
+    NtCI1QKIIx8:Create(Page1ScrollFrame, VbKQ5YSPPf2, {
         Position = UDim2.new(0, 15, 0, 60)
     }):Play()
 end
 
 local function ToggleMinimize()
     if CiRX6FZWWm3 then
-        NtCI1QKIIx8:Create(QwFL8TNKKa5, VbKQ5YSPPf2, {
+        NtCI1QKIIx8:Create(MainFrame, VbKQ5YSPPf2, {
             Size = UDim2.new(0, 240, 0, 280)
         }):Play()
-        WcLR4ZTQQg1.Visible = true
-        YeNT6BVSSi3.Visible = false
-        VbKQ3YSPPf0.Text = "-"
+        Page1ScrollFrame.Visible = true
+        Page2ScrollFrame.Visible = false
+        MinimizeButton.Text = "-"
         CiRX6FZWWm3 = false
     else
-        NtCI1QKIIx8:Create(QwFL8TNKKa5, VbKQ5YSPPf2, {
+        NtCI1QKIIx8:Create(MainFrame, VbKQ5YSPPf2, {
             Size = UDim2.new(0, 240, 0, 50)
         }):Play()
-        WcLR4ZTQQg1.Visible = false
-        YeNT6BVSSi3.Visible = false
-        VbKQ3YSPPf0.Text = "+"
+        Page1ScrollFrame.Visible = false
+        Page2ScrollFrame.Visible = false
+        MinimizeButton.Text = "+"
         CiRX6FZWWm3 = true
     end
 end
 
-VbKQ3YSPPf0.MouseButton1Click:Connect(ToggleMinimize)
+MinimizeButton.MouseButton1Click:Connect(ToggleMinimize)
 
 -- Create all buttons
-local QwFL4TNLLa1 = DjSY1GAXXn8("Bookshelf ESP", Color3.fromRGB(40, 40, 50), JpYE5MGDDt2)
-QwFL4TNLLa1.LayoutOrder = 1
-QwFL4TNLLa1.Parent = WcLR4ZTQQg1
+local BookshelfESPButton = CreateButton("Bookshelf ESP", Color3.fromRGB(40, 40, 50), JpYE5MGDDt2)
+BookshelfESPButton.LayoutOrder = 1
+BookshelfESPButton.Parent = Page1ScrollFrame
 
-local RxGM5UOMMb2 = DjSY1GAXXn8("No Bookshelf ESP", Color3.fromRGB(40, 40, 50), XdMS9AURRh6)
-RxGM5UOMMb2.LayoutOrder = 2
-RxGM5UOMMb2.Parent = WcLR4ZTQQg1
+local NoBookshelfESPButton = CreateButton("No Bookshelf ESP", Color3.fromRGB(40, 40, 50), XdMS9AURRh6)
+NoBookshelfESPButton.LayoutOrder = 2
+NoBookshelfESPButton.Parent = Page1ScrollFrame
 
-local SyHN6VPNNc3 = DjSY1GAXXn8("Start Multi-Entity Track", Color3.fromRGB(40, 40, 50), JpYE7MGDDt4)
-SyHN6VPNNc3.LayoutOrder = 3
-SyHN6VPNNc3.Parent = WcLR4ZTQQg1
+local StartTrackingButton = CreateButton("Start Multi-Entity Track", Color3.fromRGB(40, 40, 50), JpYE7MGDDt4)
+StartTrackingButton.LayoutOrder = 3
+StartTrackingButton.Parent = Page1ScrollFrame
 
-local TzIO7WQOOd4 = DjSY1GAXXn8("Stop Multi-Entity Track", Color3.fromRGB(40, 40, 50), NtCI7QKHHx4Stop)
-TzIO7WQOOd4.LayoutOrder = 4
-TzIO7WQOOd4.Parent = WcLR4ZTQQg1
+local StopTrackingButton = CreateButton("Stop Multi-Entity Track", Color3.fromRGB(40, 40, 50), StopMultiEntityTracking)
+StopTrackingButton.LayoutOrder = 4
+StopTrackingButton.Parent = Page1ScrollFrame
 
-local UaJP8XRPPe5 = DjSY1GAXXn8("Multi-Entity ESP", Color3.fromRGB(40, 40, 50), AgPV2DXUUk9)
-UaJP8XRPPe5.LayoutOrder = 5
-UaJP8XRPPe5.Parent = WcLR4ZTQQg1
+local MultiESPButton = CreateButton("Multi-Entity ESP", Color3.fromRGB(40, 40, 50), AgPV2DXUUk9)
+MultiESPButton.LayoutOrder = 5
+MultiESPButton.Parent = Page1ScrollFrame
 
-local VbKQ9YSQQf6 = DjSY1GAXXn8("No Multi-Entity ESP", Color3.fromRGB(40, 40, 50), BhQW9EYVVl6)
-VbKQ9YSQQf6.LayoutOrder = 6
-VbKQ9YSQQf6.Parent = WcLR4ZTQQg1
+local NoMultiESPButton = CreateButton("No Multi-Entity ESP", Color3.fromRGB(40, 40, 50), DisableMultiEntityESP)
+NoMultiESPButton.LayoutOrder = 6
+NoMultiESPButton.Parent = Page1ScrollFrame
 
-local WcLR0ZTRRg7 = DjSY1GAXXn8("Full Bright", Color3.fromRGB(40, 40, 50), IoXD0LFCCs7)
-WcLR0ZTRRg7.LayoutOrder = 7
-WcLR0ZTRRg7.Parent = WcLR4ZTQQg1
+local FullBrightButton = CreateButton("Full Bright", Color3.fromRGB(40, 40, 50), EnableFullBright)
+FullBrightButton.LayoutOrder = 7
+FullBrightButton.Parent = Page1ScrollFrame
 
-local XdMS1AUSRh8 = DjSY1GAXXn8("No Full Bright", Color3.fromRGB(40, 40, 50), JpYE1MGDDt8)
-XdMS1AUSRh8.LayoutOrder = 8
-XdMS1AUSRh8.Parent = WcLR4ZTQQg1
+local NoFullBrightButton = CreateButton("No Full Bright", Color3.fromRGB(40, 40, 50), DisableFullBright)
+NoFullBrightButton.LayoutOrder = 8
+NoFullBrightButton.Parent = Page1ScrollFrame
 
-local YeNT2BVSSi9 = DjSY1GAXXn8("Revive", Color3.fromRGB(40, 40, 50), EkTZ2HBYYo9)
-YeNT2BVSSi9.LayoutOrder = 9
-YeNT2BVSSi9.Parent = WcLR4ZTQQg1
+local ReviveButton = CreateButton("Revive", Color3.fromRGB(40, 40, 50), EkTZ2HBYYo9)
+ReviveButton.LayoutOrder = 9
+ReviveButton.Parent = Page1ScrollFrame
 
-local ZfOU3CWTTj0 = DjSY1GAXXn8("TP To Door", Color3.fromRGB(40, 40, 50), OuDJ0RLIIy7)
-ZfOU3CWTTj0.LayoutOrder = 10
-ZfOU3CWTTj0.Parent = WcLR4ZTQQg1
+local TeleportDoorButton = CreateButton("TP To Door", Color3.fromRGB(40, 40, 50), TeleportToDoor)
+TeleportDoorButton.LayoutOrder = 10
+TeleportDoorButton.Parent = Page1ScrollFrame
 
-local AgPV4DXUUk1 = DjSY1GAXXn8("TP To BPaper", Color3.fromRGB(40, 40, 50), RxGM3UOLLb0)
-AgPV4DXUUk1.LayoutOrder = 11
-AgPV4DXUUk1.Parent = WcLR4ZTQQg1
+local TeleportBPaperButton = CreateButton("TP To BPaper", Color3.fromRGB(40, 40, 50), TeleportToBPaper)
+TeleportBPaperButton.LayoutOrder = 11
+TeleportBPaperButton.Parent = Page1ScrollFrame
 
-local BhQW5EYVVl2 = DjSY1GAXXn8("Go To Next Page", Color3.fromRGB(40, 40, 50), GoToNextPage)
-BhQW5EYVVl2.LayoutOrder = 12
-BhQW5EYVVl2.Parent = WcLR4ZTQQg1
+local NextPageButton = CreateButton("Go To Next Page", Color3.fromRGB(40, 40, 50), GoToNextPage)
+NextPageButton.LayoutOrder = 12
+NextPageButton.Parent = Page1ScrollFrame
 
-local CiRX6FZWWm3 = DjSY1GAXXn8("Apply WalkSpeed", Color3.fromRGB(40, 40, 50), function()
-    YeNT0BVSSi7(AgPV8DXUUk5.Text)
+local ApplyWalkSpeedButton = CreateButton("Apply WalkSpeed", Color3.fromRGB(40, 40, 50), function()
+    SetWalkSpeed(WalkSpeedTextBox.Text)
 end)
-CiRX6FZWWm3.LayoutOrder = 1
-CiRX6FZWWm3.Parent = YeNT6BVSSi3
+ApplyWalkSpeedButton.LayoutOrder = 1
+ApplyWalkSpeedButton.Parent = Page2ScrollFrame
 
-local DjSY7GAXXn4 = DjSY1GAXXn8("Reset WalkSpeed", Color3.fromRGB(40, 40, 50), VbKQ7YSPPf4)
-DjSY7GAXXn4.LayoutOrder = 2
-DjSY7GAXXn4.Parent = YeNT6BVSSi3
+local ResetWalkSpeedButton = CreateButton("Reset WalkSpeed", Color3.fromRGB(40, 40, 50), ResetWalkSpeed)
+ResetWalkSpeedButton.LayoutOrder = 2
+ResetWalkSpeedButton.Parent = Page2ScrollFrame
 
-local EkTZ8HBYYo5 = DjSY1GAXXn8("Break Velocity", Color3.fromRGB(40, 40, 50), BhQW3EYVVl0)
-EkTZ8HBYYo5.LayoutOrder = 3
-EkTZ8HBYYo5.Parent = YeNT6BVSSi3
+local BreakVelocityButton = CreateButton("Break Velocity", Color3.fromRGB(40, 40, 50), BreakVelocity)
+BreakVelocityButton.LayoutOrder = 3
+BreakVelocityButton.Parent = Page2ScrollFrame
 
-local FlUA9ICZZp6 = DjSY1GAXXn8("Noclip", Color3.fromRGB(40, 40, 50), KqZF2NHEEu9)
-FlUA9ICZZp6.LayoutOrder = 4
-FlUA9ICZZp6.Parent = YeNT6BVSSi3
+local NoclipButton = CreateButton("Noclip", Color3.fromRGB(40, 40, 50), EnableNoclip)
+NoclipButton.LayoutOrder = 4
+NoclipButton.Parent = Page2ScrollFrame
 
-local GmVB0JDAaq7 = DjSY1GAXXn8("No Noclip", Color3.fromRGB(40, 40, 50), MsBH4PJGGw1)
-GmVB0JDAaq7.LayoutOrder = 5
-GmVB0JDAaq7.Parent = YeNT6BVSSi3
+local NoNoclipButton = CreateButton("No Noclip", Color3.fromRGB(40, 40, 50), DisableNoclip)
+NoNoclipButton.LayoutOrder = 5
+NoNoclipButton.Parent = Page2ScrollFrame
 
-local HnWC1KEBBr8 = DjSY1GAXXn8("Go Back", Color3.fromRGB(40, 40, 50), GoBackPage)
-HnWC1KEBBr8.LayoutOrder = 6
-HnWC1KEBBr8.Parent = YeNT6BVSSi3
+local GoBackButton = CreateButton("Go Back", Color3.fromRGB(40, 40, 50), GoBackPage)
+GoBackButton.LayoutOrder = 6
+GoBackButton.Parent = Page2ScrollFrame
 
 -- Dragging functionality
-local IoXD2LFCCs9 = nil
-local JpYE3MGDDt0 = 0.25
-local KqZF4NHEEu1 = nil
-local LrAG5OIFFv2 = nil
+local isDragging = nil
+local dragSpeed = 0.25
+local dragStart = nil
+local startPos = nil
 
-local function MsBH6PJGGw3(NtCI7QKHHx4)
-    local OuDJ8RLIIy5 = NtCI7QKHHx4.Position - KqZF4NHEEu1
-    local PvEK9SMJJz6 = UDim2.new(LrAG5OIFFv2.X.Scale, LrAG5OIFFv2.X.Offset + OuDJ8RLIIy5.X, LrAG5OIFFv2.Y.Scale, LrAG5OIFFv2.Y.Offset + OuDJ8RLIIy5.Y)
-    NtCI1QKIIx8:Create(QwFL8TNKKa5, TweenInfo.new(JpYE3MGDDt0), {Position = PvEK9SMJJz6}):Play()
+local function updateInput(input)
+    local delta = input.Position - dragStart
+    local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    NtCI1QKIIx8:Create(MainFrame, TweenInfo.new(dragSpeed), {Position = position}):Play()
 end
 
-TzIO1WQNNd8.InputBegan:Connect(function(QwFL0TNKKa7)
-    if (QwFL0TNKKa7.UserInputType == Enum.UserInputType.MouseButton1 or QwFL0TNKKa7.UserInputType == Enum.UserInputType.Touch) then
-        IoXD2LFCCs9 = true
-        KqZF4NHEEu1 = QwFL0TNKKa7.Position
-        LrAG5OIFFv2 = QwFL8TNKKa5.Position
+TitleLabel.InputBegan:Connect(function(input)
+    if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+        isDragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
         
-        QwFL0TNKKa7.Changed:Connect(function()
-            if QwFL0TNKKa7.UserInputState == Enum.UserInputState.End then
-                IoXD2LFCCs9 = false
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                isDragging = false
             end
         end)
     end
 end)
 
-TzIO1WQNNd8.InputChanged:Connect(function(RxGM1UOLLb8)
-    if (RxGM1UOLLb8.UserInputType == Enum.UserInputType.MouseMovement or RxGM1UOLLb8.UserInputType == Enum.UserInputType.Touch) then
-        if IoXD2LFCCs9 then
-            MsBH6PJGGw3(RxGM1UOLLb8)
+TitleLabel.InputChanged:Connect(function(input)
+    if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        if isDragging then
+            updateInput(input)
         end
     end
 end)
