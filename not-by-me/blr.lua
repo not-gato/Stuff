@@ -27,10 +27,9 @@ print("[TASKER]: Loading (20%)")
 local Tabs = {
     Main = Window:AddTab("Principal"),
     Visuals = Window:AddTab("Visuais"),
-    Exploits = Window:AddTab("Exploits")
+    Exploits = Window:AddTab("Exploits"),
+    Config = Window:AddTab("Config")
 }
-
-print("[TASKER]: Loading (30%)")
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -59,49 +58,43 @@ local lightingDefaults = {
     FogColor = Lighting.FogColor
 }
 
-print("[TASKER]: Loading (40%)")
-
--- Player settings
 local playerGroup = Tabs.Main:AddLeftGroupbox("Jogador")
 playerGroup:AddSlider("WalkSpeed", {Text = "Velocidade", Default = 16, Min = 16, Max = 80, Rounding = 0})
 
--- Utilities
 local utilsGroup = Tabs.Main:AddRightGroupbox("Utilitários")
 utilsGroup:AddToggle("AntiKick", {Text="Bloquear Kick", Default=false})
 utilsGroup:AddToggle("AntiAFK", {Text="Anti-AFK", Default=false})
 utilsGroup:AddToggle("AntiVoid", {Text="Proteção contra Void", Default=false})
 utilsGroup:AddToggle("Noclip", {Text="Noclip (Atravessar Paredes)", Default=false})
 
-print("[TASKER]: Loading (50%)")
-
--- Camera settings
 local cameraGroup = Tabs.Visuals:AddLeftGroupbox("Câmera")
 cameraGroup:AddSlider("FOV", {Text = "Campo de Visão (FOV)", Default = 70, Min = 70, Max = 180, Rounding = 0})
 cameraGroup:AddToggle("FullBright", {Text = "Luz Total", Default = false})
 cameraGroup:AddToggle("NoFog", {Text = "Sem Névoa", Default = false})
 
--- ESP settings
 local ESPGroup = Tabs.Visuals:AddLeftGroupbox("ESP")
 ESPGroup:AddToggle("BolaESP", {Text = "ESP Bola", Default = false})
 ESPGroup:AddToggle("PlayerESP", {Text = "ESP Jogador", Default = false})
 
-print("[TASKER]: Loading (60%)")
-
--- Exploits
 local aimGroup = Tabs.Exploits:AddLeftGroupbox("Mira")
 aimGroup:AddToggle("AimLockBall", {Text = "Travar Mira (Com Bola)", Default = false})
 
 local helperGroup = Tabs.Exploits:AddLeftGroupbox("Assistente")
 helperGroup:AddToggle("NotifyBall", {Text = "Avisar Quem Tem a Bola", Default = false})
 
+local configGroup = Tabs.Config:AddLeftGroupbox("Configurações")
+configGroup:AddButton("Salvar Config", function()
+    SaveManager:Save()
+end)
+configGroup:AddButton("Carregar Config", function()
+    SaveManager:Load()
+end)
+
 local bolaESP = {}
 local playerESP = {}
 local lastHolder = nil
 local aimTarget = nil
 
-print("[TASKER]: Loading (70%)")
-
--- Bola ESP
 local function enableBolaESP()
     local ball = workspace:FindFirstChild("Football")
     if not ball then return end
@@ -139,9 +132,6 @@ local function disableBolaESP()
     bolaESP = {}
 end
 
-print("[TASKER]: Loading (80%)")
-
--- Player ESP
 local function createPlayerESP(p)
     if p == LocalPlayer or playerESP[p] then return end
     local highlight = Instance.new("Highlight")
@@ -185,9 +175,6 @@ Toggles.BolaESP:OnChanged(function()
     end
 end)
 
-print("[TASKER]: Loading (90%)")
-
--- AntiKick
 local mt = getrawmetatable(game)
 local oldNamecall = mt.__namecall
 setreadonly(mt, false)
@@ -199,11 +186,105 @@ mt.__namecall = newcclosure(function(self, ...)
 end)
 setreadonly(mt, true)
 
--- AntiAFK
 Players.LocalPlayer.Idled:Connect(function()
     if Toggles.AntiAFK.Value then
         VirtualUser:CaptureController()
         VirtualUser:ClickButton2(Vector2.new())
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    if Toggles.AntiVoid.Value then
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") and char.HumanoidRootPart.Position.Y < -10 then
+            char:MoveTo(Vector3.new(0, 50, 0))
+        end
+    end
+end)
+
+RunService.Stepped:Connect(function()
+    if Toggles.Noclip.Value then
+        local char = LocalPlayer.Character
+        if char then
+            for _, part in pairs(char:GetChildren()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end
+    end
+end)
+
+RunService.RenderStepped:Connect(function()
+    if Toggles.FullBright.Value then
+        Lighting.Brightness = 2
+        Lighting.ClockTime = 12
+        Lighting.Ambient = Color3.new(1, 1, 1)
+        Lighting.OutdoorAmbient = Color3.new(1, 1, 1)
+    else
+        for k, v in pairs(lightingDefaults) do Lighting[k] = v end
+    end
+
+    if Toggles.NoFog.Value then
+        Lighting.FogEnd = 100000
+    else
+        Lighting.FogEnd = lightingDefaults.FogEnd
+        Lighting.FogStart = lightingDefaults.FogStart
+        Lighting.FogColor = lightingDefaults.FogColor
+    end
+
+    local char = LocalPlayer.Character
+    if char then
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then hum.WalkSpeed = Options.WalkSpeed.Value end
+    end
+
+    Camera.FieldOfView = Options.FOV.Value
+
+    for p, data in pairs(playerESP) do
+        local char = workspace:FindFirstChild(p.Name)
+        if Toggles.PlayerESP.Value and char and char:FindFirstChild("Head") then
+            local head = char.Head
+            local vals = char:FindFirstChild("Values")
+            local stunned = (vals and vals:FindFirstChild("Stunned") and vals.Stunned.Value) and "Sim" or "Não"
+            local hasBall = vals and vals:FindFirstChild("HasBall") and vals.HasBall.Value
+            data.Highlight.Adornee = char
+            local col = hasBall and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 255, 0)
+            data.Highlight.OutlineColor = col
+            data.Text.Color = col
+            local pos, onScreen = Camera:WorldToViewportPoint(head.Position + Vector3.new(0, 3, 0))
+            data.Text.Visible = onScreen
+            if onScreen then
+                data.Text.Position = Vector2.new(pos.X, pos.Y)
+                data.Text.Text = string.format("%s [Atordoado: %s, Tem Bola: %s]", p.Name, stunned, hasBall and "Sim" or "Não")
+            end
+            if hasBall and onScreen then
+                data.Tracer.From = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y)
+                data.Tracer.To = Vector2.new(pos.X, pos.Y)
+                data.Tracer.Visible = true
+            else
+                data.Tracer.Visible = false
+            end
+            if hasBall then
+                if Toggles.NotifyBall.Value and lastHolder ~= p then
+                    notify("[ALERTA DE BOLA!]: " .. p.Name)
+                    lastHolder = p
+                end
+                if Toggles.AimLockBall.Value then
+                    aimTarget = head
+                end
+            end
+        else
+            data.Text.Visible = false
+            data.Tracer.Visible = false
+            data.Highlight.Adornee = nil
+        end
+    end
+
+    if Toggles.AimLockBall.Value and aimTarget then
+        local camPos = Camera.CFrame.Position
+        local dir = (aimTarget.Position - camPos).Unit
+        Camera.CFrame = CFrame.new(camPos, camPos + dir)
     end
 end)
 
