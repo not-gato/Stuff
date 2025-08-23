@@ -1,0 +1,76 @@
+local a=game:GetService("Players")
+local aa=game:GetService("TweenService")
+local ba=game:GetService("Lighting")
+local ca=game:GetService("Workspace")
+local da=a.LocalPlayer
+local ea=Instance.new("Hint")
+ea.Parent=da:WaitForChild("PlayerGui")
+ea.Text="The Sun Will Explode In 10 Seconds, Hide Under a Roof!"
+local fa=10
+local function ga(ha)
+	if not ha or not ha:FindFirstChild("Head") then return false end
+	local ia=ha.Head.Position
+	local ja=Vector3.new(0,50,0)
+	local ka=Ray.new(ia,ja)
+	local la=ca:FindPartOnRay(ka,ha)
+	if la then
+		if la.Transparency==0 then return true end
+	end
+	return false
+end
+task.spawn(function()
+	while fa>=0 do
+		ea.Text="The Sun Will Explode In "..fa.." Seconds, Hide Under a Roof!"
+		fa-=1
+		task.wait(1)
+	end
+	local ma=Instance.new("ColorCorrectionEffect")
+	ma.Parent=ba
+	ma.TintColor=Color3.fromRGB(255,255,0)
+	ma.Brightness=0
+	aa:Create(ma,TweenInfo.new(3),{Brightness=10}):Play()
+	local na=Instance.new("Sound")
+	na.SoundId="rbxassetid://9126142726"
+	na.Volume=10
+	na.Parent=ca
+	na:Play()
+	ba.FogColor=Color3.fromRGB(255,165,0)
+	ba.FogStart=0
+	ba.FogEnd=20
+	if ba:FindFirstChildOfClass("Sky") then
+		ba:FindFirstChildOfClass("Sky"):Destroy()
+	end
+	ba.ClockTime=12
+	task.delay(5,function()
+		for _,oa in pairs(a:GetPlayers())do
+			if oa.Character and oa.Character:FindFirstChild("Humanoid") then
+				if not ga(oa.Character) then
+					oa.Character.Humanoid.Health=0
+					if oa==da then
+						task.delay(0.1,function() da:Kick("The Sun Has Exploded :(") end)
+					end
+				end
+			end
+		end
+	end)
+	task.delay(15,function()
+		if ma and ma.Parent then ma:Destroy() end
+		coroutine.wrap(function()
+			local pa={}
+			for _,qa in pairs(ca:GetDescendants())do
+				if qa:IsA("BasePart") then table.insert(pa,qa) end
+			end
+			local ra=1
+			local sa=#pa
+			while ra<=sa do
+				for ta=ra,math.min(ra+499,sa)do
+					local ua=pa[ta]
+					ua.Material=Enum.Material.CorrodedMetal
+					ua.Color=Color3.fromRGB(101,67,33)
+				end
+				ra+=500
+				task.wait(0.01)
+			end
+		end)()
+	end)
+end)
