@@ -197,55 +197,55 @@ profile_section:AddButton("Remove Profile Picture", function()
     shared.Notify("Profile picture removed.", 2)
 end)
 
-local selectedSkybox = nil
-local customSkybox = ""
+local skyLeft, skyRight, skyFront, skyBack, skyUp, skyDown = "", "", "", "", "", ""
 local fogStart, fogEnd, fogColor = 0, 1000, Color3.new(1,1,1)
 
-lightning_section:AddDropdown("Predefined Skyboxes", {}, function(selected)
-    selectedSkybox = selected
-end)
-
-lightning_section:AddButton("Apply Selected Predefined Skybox", function()
-    if selectedSkybox then
-        shared.Notify("No predefined skyboxes available.", 2)
-    end
-end)
-
-lightning_section:AddTextBox("Custom Skybox", function(text)
-    customSkybox = text
-end)
+lightning_section:AddTextBox("Skybox Left", function(text) skyLeft = text end)
+lightning_section:AddTextBox("Skybox Right", function(text) skyRight = text end)
+lightning_section:AddTextBox("Skybox Front", function(text) skyFront = text end)
+lightning_section:AddTextBox("Skybox Back", function(text) skyBack = text end)
+lightning_section:AddTextBox("Skybox Up", function(text) skyUp = text end)
+lightning_section:AddTextBox("Skybox Down", function(text) skyDown = text end)
 
 lightning_section:AddButton("Apply Custom Skybox", function()
-    if customSkybox ~= "" then
-        local sky = Instance.new("Sky")
-        sky.Parent = Lighting
-        sky.SkyboxBk = customSkybox
-        sky.SkyboxDn = customSkybox
-        sky.SkyboxFt = customSkybox
-        sky.SkyboxLf = customSkybox
-        sky.SkyboxRt = customSkybox
-        sky.SkyboxUp = customSkybox
-        shared.Notify("Custom skybox applied.", 2)
+    for _, v in pairs(Lighting:GetChildren()) do
+        if v:IsA("Sky") then
+            v:Destroy()
+        end
     end
+
+    local defaultSky = {
+        Bk = "rbxasset://textures/sky/sky512_bk.tex",
+        Ft = "rbxasset://textures/sky/sky512_ft.tex",
+        Lf = "rbxasset://textures/sky/sky512_lf.tex",
+        Rt = "rbxasset://textures/sky/sky512_rt.tex",
+        Up = "rbxasset://textures/sky/sky512_up.tex",
+        Dn = "rbxasset://textures/sky/sky512_dn.tex",
+    }
+
+    local sky = Instance.new("Sky")
+    sky.Parent = Lighting
+
+    sky.SkyboxBk = (skyBack ~= "" and skyBack ~= "0") and "rbxassetid://"..skyBack or defaultSky.Bk
+    sky.SkyboxFt = (skyFront ~= "" and skyFront ~= "0") and "rbxassetid://"..skyFront or defaultSky.Ft
+    sky.SkyboxLf = (skyLeft ~= "" and skyLeft ~= "0") and "rbxassetid://"..skyLeft or defaultSky.Lf
+    sky.SkyboxRt = (skyRight ~= "" and skyRight ~= "0") and "rbxassetid://"..skyRight or defaultSky.Rt
+    sky.SkyboxUp = (skyUp ~= "" and skyUp ~= "0") and "rbxassetid://"..skyUp or defaultSky.Up
+    sky.SkyboxDn = (skyDown ~= "" and skyDown ~= "0") and "rbxassetid://"..skyDown or defaultSky.Dn
+
+    shared.Notify("Custom skybox applied (default used for empty/0 IDs).", 2)
 end)
 
-lightning_section:AddLabel("Skyboxes use Texture IDs, not Decal IDs! Be sure to copy the Texture ID.")
+lightning_section:AddLabel("Skyboxes use Texture IDs, not Decal IDs!")
 
-lightning_section:AddTextBox("Fog End", function(text)
-    fogEnd = tonumber(text) or fogEnd
-end)
-
-lightning_section:AddTextBox("Fog Start", function(text)
-    fogStart = tonumber(text) or fogStart
-end)
-
-lightning_section:AddTextBox("Fog Color (RGB)", function(text)
+lightning_section:AddTextBox("Fog Start", function(text) fogStart = tonumber(text) or fogStart end)
+lightning_section:AddTextBox("Fog End", function(text) fogEnd = tonumber(text) or fogEnd end)
+lightning_section:AddTextBox("Fog Color (R,G,B)", function(text)
     local r,g,b = text:match("(%d+),(%d+),(%d+)")
     if r and g and b then
         fogColor = Color3.fromRGB(tonumber(r), tonumber(g), tonumber(b))
     end
 end)
-
 lightning_section:AddButton("Apply Fog", function()
     Lighting.FogStart = fogStart
     Lighting.FogEnd = fogEnd
@@ -262,11 +262,7 @@ local lightingTechMap = {
 
 local lightingTechs = {"Future", "ShadowMap", "Voxel", "Compatibility"}
 local selectedTech = "Future"
-
-lightning_section:AddDropdown("Lighting Technology", lightingTechs, function(selected)
-    selectedTech = selected
-end)
-
+lightning_section:AddDropdown("Lighting Technology", lightingTechs, function(selected) selectedTech = selected end)
 lightning_section:AddButton("Apply Selected Lighting Technology", function()
     if selectedTech and lightingTechMap[selectedTech] then
         Lighting.Technology = lightingTechMap[selectedTech]
@@ -276,31 +272,19 @@ lightning_section:AddButton("Apply Selected Lighting Technology", function()
     end
 end)
 
-local _z9Y8 = {
-    ["SoundId"] = true,
-    ["Volume"] = true,
-    ["PlaybackSpeed"] = true,
-    ["Pitch"] = true,
-}
-
-local _q7W6 = nil
-local _x5V4 = false
-
-sound_section:AddToggle("Sound Logger", function(_p3R2)
-    _x5V4 = _p3R2
-    if _x5V4 then
-        if not _q7W6 then
-            _q7W6 = hookmetamethod(game, "__newindex", newcclosure(function(_k1J0, _m2N1, _n3P4)
-                if _k1J0:IsA("Sound") and _z9Y8[_m2N1] then
-                    return
-                end
-                return _q7W6(_k1J0, _m2N1, _n3P4)
-            end))
-        end
+local soundProperties = {["SoundId"]=true, ["Volume"]=true, ["PlaybackSpeed"]=true, ["Pitch"]=true}
+local soundHook = nil
+local soundLoggerActive = false
+sound_section:AddToggle("Sound Logger", function(state)
+    soundLoggerActive = state
+    if soundLoggerActive and not soundHook then
+        soundHook = hookmetamethod(game,"__newindex",newcclosure(function(self,key,value)
+            if self:IsA("Sound") and soundProperties[key] then return end
+            return soundHook(self,key,value)
+        end))
     end
 end)
-
-sound_section:AddLabel('Credits To: <font color="rgb(0,255,0)"><u>Unlucks (@unluckyau)</u></font>\n__this line__')
+sound_section:AddLabel('Credits To: <font color="rgb(0,255,0)"><u>Unlucks (@unluckyau)</u></font>')
 
 local autoChatMessage = ""
 local autoChatDelay = 1
@@ -308,7 +292,6 @@ local autoChatToggle = false
 other_section:AddTextBox("Message To Chat", function(text) autoChatMessage = text end)
 other_section:AddSlider("Delay (s)", 0.1, 60, 1, function(val) autoChatDelay = val end)
 other_section:AddToggle("Auto Chat", function(state) autoChatToggle = state end)
-
 task.spawn(function()
     while true do
         if autoChatToggle and autoChatMessage ~= "" then
@@ -321,35 +304,33 @@ end)
 other_section:AddButton("Copy Server JobID", function() setclipboard(game.JobId) end)
 other_section:AddButton("Server Hop", function()
     local placeId = game.PlaceId
-    local success, servers = pcall(function() return HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..placeId.."/servers/Public?sortOrder=Asc&limit=100")) end)
+    local success, servers = pcall(function()
+        return HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..placeId.."/servers/Public?sortOrder=Asc&limit=100"))
+    end)
     if not success or not servers then return end
     local nextCursor = servers.nextPageCursor
     local chosenServer
     local function findAvailableServer(serverList)
         for _, srv in pairs(serverList) do
-            if srv.playing < srv.maxPlayers and srv.id ~= game.JobId then
-                return srv.id
-            end
+            if srv.playing < srv.maxPlayers and srv.id ~= game.JobId then return srv.id end
         end
     end
     chosenServer = findAvailableServer(servers.data)
     while not chosenServer and nextCursor do
-        local pageSuccess, pageServers = pcall(function() return HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..placeId.."/servers/Public?sortOrder=Asc&limit=100&cursor="..nextCursor)) end)
+        local pageSuccess, pageServers = pcall(function()
+            return HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..placeId.."/servers/Public?sortOrder=Asc&limit=100&cursor="..nextCursor))
+        end)
         if not pageSuccess or not pageServers then break end
         chosenServer = findAvailableServer(pageServers.data)
         nextCursor = pageServers.nextPageCursor
     end
-    if chosenServer then
-        TeleportService:TeleportToPlaceInstance(placeId, chosenServer, LocalPlayer)
-    end
+    if chosenServer then TeleportService:TeleportToPlaceInstance(placeId, chosenServer, LocalPlayer) end
 end)
 
 other_section:AddButton("Rejoin", function() TeleportService:Teleport(game.PlaceId, LocalPlayer) end)
 local joinJobID = ""
 other_section:AddTextBox("Server JobID", function(text) joinJobID = text end)
 other_section:AddButton("Join Server (JobID)", function()
-    if joinJobID ~= "" then
-        TeleportService:TeleportToPlaceInstance(game.PlaceId, joinJobID, LocalPlayer)
-    end
+    if joinJobID ~= "" then TeleportService:TeleportToPlaceInstance(game.PlaceId, joinJobID, LocalPlayer) end
 end)
 other_section:AddButton("Force Quit Game", function() game:Shutdown() end)
