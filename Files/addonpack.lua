@@ -197,43 +197,222 @@ profile_section:AddButton("Remove Profile Picture", function()
     shared.Notify("Profile picture removed.", 2)
 end)
 
-local skyLeft, skyRight, skyFront, skyBack, skyUp, skyDown = "", "", "", "", "", ""
 local fogStart, fogEnd, fogColor = 0, 1000, Color3.new(1,1,1)
 
-lightning_section:AddTextBox("Skybox Left", function(text) skyLeft = text end)
-lightning_section:AddTextBox("Skybox Right", function(text) skyRight = text end)
-lightning_section:AddTextBox("Skybox Front", function(text) skyFront = text end)
-lightning_section:AddTextBox("Skybox Back", function(text) skyBack = text end)
-lightning_section:AddTextBox("Skybox Up", function(text) skyUp = text end)
-lightning_section:AddTextBox("Skybox Down", function(text) skyDown = text end)
+local skyboxOptions = {
+    "Realistic Sky",
+    "Minecraft Sky",
+    "Sunset",
+    "Purple Nighty Sky #1",
+    "Purple Nighty Sky #2",
+    "Nighty Sky"
+}
+
+local skyboxPresets = {
+    ["Minecraft Sky"] = function()
+        for _, obj in ipairs(Lighting:GetChildren()) do
+            if obj:IsA("Sky") then obj:Destroy() end
+        end
+        local sky = Instance.new("Sky")
+        sky.SkyboxBk = "rbxassetid://8735166756"
+        sky.SkyboxDn = "rbxassetid://8735166707"
+        sky.SkyboxFt = "rbxassetid://8735231668"
+        sky.SkyboxLf = "rbxassetid://8735166755"
+        sky.SkyboxRt = "rbxassetid://8735166751"
+        sky.SkyboxUp = "rbxassetid://8735166729"
+        sky.SunTextureId = "rbxassetid://8735166708"
+        sky.MoonTextureId = "rbxassetid://8735166687"
+        sky.Parent = Lighting
+        Lighting.FogColor = Color3.fromRGB(185, 242, 246)
+        Lighting.FogEnd = 2000
+        Lighting.FogStart = 0
+        Lighting.Ambient = Color3.fromRGB(2, 125, 157)
+        Lighting.Brightness = 3.133
+        Lighting.EnvironmentDiffuseScale = 0
+        Lighting.EnvironmentSpecularScale = 0
+        Lighting.GlobalShadows = true
+        Lighting.OutdoorAmbient = Color3.fromRGB(9, 111, 157)
+        Lighting.ShadowSoftness = 1
+        Lighting.Technology = Enum.Technology.Future
+    end,
+    ["Realistic Sky"] = function()
+        for _, obj in ipairs(Lighting:GetChildren()) do
+            if obj:IsA("Sky") then obj:Destroy() end
+        end
+        local realisticSky = Instance.new("Sky")
+        realisticSky.Name = "RealisticSky"
+        realisticSky.SkyboxBk = "rbxassetid://144933338"
+        realisticSky.SkyboxDn = "rbxassetid://144931530"
+        realisticSky.SkyboxFt = "rbxassetid://144933262"
+        realisticSky.SkyboxLf = "rbxassetid://144933244"
+        realisticSky.SkyboxRt = "rbxassetid://144933299"
+        realisticSky.SkyboxUp = "rbxassetid://144931564"
+        realisticSky.Parent = Lighting
+        Lighting.Ambient = Color3.fromRGB(110, 157, 152)
+        Lighting.Brightness = 3.133
+        Lighting.ColorShift_Bottom = Color3.fromRGB(118, 161, 155)
+        Lighting.ColorShift_Top = Color3.fromRGB(92, 136, 129)
+        Lighting.EnvironmentDiffuseScale = 0
+        Lighting.EnvironmentSpecularScale = 0
+        Lighting.GlobalShadows = true
+        Lighting.OutdoorAmbient = Color3.fromRGB(117, 157, 151)
+        Lighting.ShadowSoftness = 0.5
+        Lighting.Technology = Enum.Technology.Voxel
+    end,
+    ["Purple Nighty Sky #1"] = function()
+        for _, obj in ipairs(Lighting:GetChildren()) do
+            if obj:IsA("Sky") then obj:Destroy() end
+        end
+        local nebulaSky = Instance.new("Sky")
+        nebulaSky.Name = "NebulaSky"
+        nebulaSky.SkyboxBk = "rbxassetid://159454299"
+        nebulaSky.SkyboxDn = "rbxassetid://159454296"
+        nebulaSky.SkyboxFt = "rbxassetid://159454293"
+        nebulaSky.SkyboxLf = "rbxassetid://159454286"
+        nebulaSky.SkyboxRt = "rbxassetid://159454300"
+        nebulaSky.SkyboxUp = "rbxassetid://159454288"
+        nebulaSky.SunTextureId = ""
+        nebulaSky.MoonTextureId = ""
+        nebulaSky.Parent = Lighting
+        Lighting.Ambient = Color3.fromRGB(87, 6, 105)
+        Lighting.Brightness = -9
+        Lighting.ColorShift_Bottom = Color3.fromRGB(58, 31, 79)
+        Lighting.ColorShift_Top = Color3.fromRGB(41, 32, 74)
+        Lighting.EnvironmentDiffuseScale = 0
+        Lighting.EnvironmentSpecularScale = 0
+        Lighting.GlobalShadows = true
+        Lighting.OutdoorAmbient = Color3.fromRGB(69, 0, 157)
+        Lighting.ShadowSoftness = 0.5
+        Lighting.Technology = Enum.Technology.Future
+    end,
+    ["Purple Nighty Sky #2"] = function()
+        for _, obj in ipairs(Lighting:GetChildren()) do
+            if obj:IsA("Sky") then obj:Destroy() end
+        end
+        local sky = Instance.new("Sky")
+        sky.Parent = Lighting
+        sky.SkyboxBk = "rbxassetid://14543264135"
+        sky.SkyboxDn = "rbxassetid://14543358958"
+        sky.SkyboxFt = "rbxassetid://14543257810"
+        sky.SkyboxLf = "rbxassetid://14543275895"
+        sky.SkyboxRt = "rbxassetid://14543280890"
+        sky.SkyboxUp = "rbxassetid://14543371676"
+        sky.SunTextureId = ""
+        sky.MoonTextureId = ""
+        Lighting.Ambient = Color3.fromRGB(124, 1, 205)
+        Lighting.Brightness = 0.23
+        Lighting.ColorShift_Bottom = Color3.fromRGB(0, 0, 0)
+        Lighting.ColorShift_Top = Color3.fromRGB(0, 0, 0)
+        Lighting.EnvironmentDiffuseScale = 0
+        Lighting.EnvironmentSpecularScale = 0
+        Lighting.GlobalShadows = true
+        Lighting.OutdoorAmbient = Color3.fromRGB(95, 0, 182)
+        Lighting.ShadowSoftness = 0.5
+        Lighting.Technology = Enum.Technology.Future
+    end,
+    ["Sunset"] = function()
+        for _, obj in ipairs(Lighting:GetChildren()) do
+            if obj:IsA("Sky") then obj:Destroy() end
+        end
+        local Sky = Instance.new("Sky")
+        Sky.SkyboxBk = "rbxassetid://15502525195"
+        Sky.SkyboxDn = "rbxassetid://15502522797"
+        Sky.SkyboxFt = "rbxassetid://15502524520"
+        Sky.SkyboxLf = "rbxassetid://15502522129"
+        Sky.SkyboxRt = "rbxassetid://15502523711"
+        Sky.SkyboxUp = "rbxassetid://15502526102"
+        Sky.Parent = Lighting
+        Lighting.OutdoorAmbient = Color3.fromRGB(210, 104, 0)
+        Lighting.ShadowColor = Color3.fromRGB(109, 91, 34)
+        Lighting.ShadowSoftness = 1
+        Lighting.TimeOfDay = "07:00:00"
+        Lighting.Technology = Enum.Technology.Future
+        Lighting.Ambient = Color3.fromRGB(233, 191, 12)
+        Lighting.Brightness = 1.7
+        Lighting.ClockTime = 6.5
+    end,
+    ["Nighty Sky"] = function()
+        for _, obj in pairs(Lighting:GetChildren()) do
+            if obj:IsA("Sky") then
+                obj:Destroy()
+            end
+        end
+        local sky = Instance.new("Sky")
+        sky.Name = "CustomSky"
+        sky.SkyboxBk = "rbxassetid://168387023"
+        sky.SkyboxDn = "rbxassetid://168387089"
+        sky.SkyboxFt = "rbxassetid://168387054"
+        sky.SkyboxLf = "rbxassetid://168534432"
+        sky.SkyboxRt = "rbxassetid://168387190"
+        sky.SkyboxUp = "rbxassetid://168387135"
+        sky.Parent = Lighting
+        Lighting.Ambient = Color3.new(0, 0, 0)
+        Lighting.Brightness = 0.3
+        Lighting.ClockTime = 14.5
+        Lighting.ColorShift_Bottom = Color3.new(0, 0, 0)
+        Lighting.ColorShift_Top = Color3.new(0, 0, 0)
+        Lighting.OutdoorAmbient = Color3.new(0, 0, 0)
+        Lighting.ShadowColor = Color3.new(0, 0, 0)
+        Lighting.ShadowSoftness = 0.2
+        Lighting.TimeOfDay = "14:30:00"
+        Lighting.Technology = Enum.Technology.Future
+    end
+}
+
+local selectedSkybox = nil
+lightning_section:AddDropdown("Predefined Skyboxes", skyboxOptions, function(selected) selectedSkybox = selected end)
+lightning_section:AddButton("Apply Selected Predefined Skybox", function()
+    if selectedSkybox and skyboxPresets[selectedSkybox] then
+        skyboxPresets[selectedSkybox]()
+        shared.Notify("Applied " .. selectedSkybox, 2)
+    else
+        shared.Notify("No skybox selected or preset missing.", 2)
+    end
+end)
+
+local customSkyboxBk = ""
+local customSkyboxDn = ""
+local customSkyboxFt = ""
+local customSkyboxLf = ""
+local customSkyboxRt = ""
+local customSkyboxUp = ""
+local defaultSkyId = "rbxassetid://8409591219"
+
+local function normalizeSkyId(s)
+    if not s then return defaultSkyId end
+    s = tostring(s):match("^%s*(.-)%s*$")
+    if s == "" then return defaultSkyId end
+    local digits = s:match("(%d+)")
+    if not digits or tonumber(digits) == 0 then return defaultSkyId end
+    return "rbxassetid://" .. digits
+end
+
+lightning_section:AddTextBox("Custom Skybox - Back (SkyboxBk)", function(text) customSkyboxBk = text end)
+lightning_section:AddTextBox("Custom Skybox - Down (SkyboxDn)", function(text) customSkyboxDn = text end)
+lightning_section:AddTextBox("Custom Skybox - Front (SkyboxFt)", function(text) customSkyboxFt = text end)
+lightning_section:AddTextBox("Custom Skybox - Left (SkyboxLf)", function(text) customSkyboxLf = text end)
+lightning_section:AddTextBox("Custom Skybox - Right (SkyboxRt)", function(text) customSkyboxRt = text end)
+lightning_section:AddTextBox("Custom Skybox - Up (SkyboxUp)", function(text) customSkyboxUp = text end)
 
 lightning_section:AddButton("Apply Custom Skybox", function()
-    for _, v in pairs(Lighting:GetChildren()) do
-        if v:IsA("Sky") then
-            v:Destroy()
-        end
+    for _, obj in ipairs(Lighting:GetChildren()) do
+        if obj:IsA("Sky") then obj:Destroy() end
     end
-
-    local defaultSky = {
-        Bk = "rbxasset://textures/sky/sky512_bk.tex",
-        Ft = "rbxasset://textures/sky/sky512_ft.tex",
-        Lf = "rbxasset://textures/sky/sky512_lf.tex",
-        Rt = "rbxasset://textures/sky/sky512_rt.tex",
-        Up = "rbxasset://textures/sky/sky512_up.tex",
-        Dn = "rbxasset://textures/sky/sky512_dn.tex",
-    }
-
     local sky = Instance.new("Sky")
+    sky.Name = "CustomSky"
+    sky.SkyboxBk = normalizeSkyId(customSkyboxBk)
+    sky.SkyboxDn = normalizeSkyId(customSkyboxDn)
+    sky.SkyboxFt = normalizeSkyId(customSkyboxFt)
+    sky.SkyboxLf = normalizeSkyId(customSkyboxLf)
+    sky.SkyboxRt = normalizeSkyId(customSkyboxRt)
+    sky.SkyboxUp = normalizeSkyId(customSkyboxUp)
     sky.Parent = Lighting
-
-    sky.SkyboxBk = (skyBack ~= "" and skyBack ~= "0") and "rbxassetid://"..skyBack or defaultSky.Bk
-    sky.SkyboxFt = (skyFront ~= "" and skyFront ~= "0") and "rbxassetid://"..skyFront or defaultSky.Ft
-    sky.SkyboxLf = (skyLeft ~= "" and skyLeft ~= "0") and "rbxassetid://"..skyLeft or defaultSky.Lf
-    sky.SkyboxRt = (skyRight ~= "" and skyRight ~= "0") and "rbxassetid://"..skyRight or defaultSky.Rt
-    sky.SkyboxUp = (skyUp ~= "" and skyUp ~= "0") and "rbxassetid://"..skyUp or defaultSky.Up
-    sky.SkyboxDn = (skyDown ~= "" and skyDown ~= "0") and "rbxassetid://"..skyDown or defaultSky.Dn
-
-    shared.Notify("Custom skybox applied (default used for empty/0 IDs).", 2)
+    task.wait(0)
+    if Lighting:FindFirstChild("CustomSky") then
+        shared.Notify("✅ Custom skybox applied.", 2)
+    else
+        shared.Notify("❌ Failed to apply custom skybox.", 2)
+    end
 end)
 
 lightning_section:AddLabel("Skyboxes use Texture IDs, not Decal IDs!")
