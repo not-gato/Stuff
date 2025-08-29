@@ -692,7 +692,6 @@ lightning_section:AddToggle("Remove Celestial Bodies (Sun & Moon)", function(sta
                 end
             end)
         end
-        shared.Notify("Celestial bodies disabled (sun & moon hidden).", 1)
     else
         removeCelestialsEnabled = false
         if removeCelestialsConn then removeCelestialsConn:Disconnect(); removeCelestialsConn = nil end
