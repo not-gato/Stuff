@@ -11,6 +11,9 @@ local InsertService = game:GetService("InsertService")
 local LocalPlayer = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local savedPosition = nil
+local respawning = false
+local selectedRespawnAmount = 12
 local decalId = 101525741634578
 local loopJOB = false
 local selectedTargetType = "Nearest Player"
@@ -27,9 +30,9 @@ local profile_section = shared.AddSection("Profile Picture Editor | #3")
 local lightning_section = shared.AddSection("Lightning | #4")
 local sound_section = shared.AddSection("Sound Logger | #5")
 local graphics_section = shared.AddSection("Graphics | #6")
-local other_section = shared.AddSection("Other | #7")
-
-local section = shared.AddSection("JOB Spray")
+local section = shared.AddSection("Spray Paint | #7")
+local my_own_section = shared.AddSection("Map Voter | #8")
+local other_section = shared.AddSection("Other | #9")
 
 -- pmo
 
@@ -936,38 +939,52 @@ local function spray(target)
     end
 end
 
+local loopJOB = false
+local loopThread
+
 local function loopSpray()
     while loopJOB do
         local target = getTarget()
         if target then spray(target) end
-        task.wait(14)
+        for i = 1, 14 do
+            if not loopJOB then break end
+            task.wait(1)
+        end
     end
+    loopThread = nil
 end
 
 section:AddToggle("Loop Spray Paint", function(state)
     loopJOB = state
-    if loopJOB then task.spawn(loopSpray) end
+    if loopJOB and not loopThread then
+        loopThread = task.spawn(loopSpray)
+    end
 end)
 
 section:AddDropdown("Target Type", {"Nearest Player","Random","Select Player"}, function(opt)
     selectedTargetType = opt
 end)
 
+local selectPlayerDropdown
+local function updatePlayerDropdown()
+    local playerList = {}
+    for _,p in pairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer then
+            table.insert(playerList, p.Name)
+        end
+    end
+    if selectPlayerDropdown then
+        section:RemoveElement("Select Player")
+    end
+    selectPlayerDropdown = section:AddDropdown("Select Player", playerList, function(opt)
+        selectedPlayer = Players:FindFirstChild(opt)
+        selectedTargetType = "Select Player"
+    end)
+end
+
 task.spawn(function()
     while task.wait(1) do
-        local playerList = {}
-        for _,p in pairs(Players:GetPlayers()) do
-            if p ~= LocalPlayer then
-                table.insert(playerList, p.Name)
-            end
-        end
-
-        
-        section:RemoveElement("Select Player")
-        section:AddDropdown("Select Player", playerList, function(opt)
-            selectedPlayer = Players:FindFirstChild(opt)
-            selectedTargetType = "Select Player"
-        end)
+        updatePlayerDropdown()
     end
 end)
 
@@ -983,7 +1000,7 @@ section:AddButton("Spray Paint Player", function()
     if not target then return end
     task.spawn(function()
         for i = 1, 5 do
-                spray(target)
+            spray(target)
             task.wait(13)
         end
     end)
@@ -994,6 +1011,42 @@ section:AddButton("Get Spray Tool", function()
     ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Extras"):WaitForChild("ReplicateToy"):InvokeServer(unpack(args))
     shared.Notify("Spray tool requested!", 2)
 end)
+
+my_own_section:AddSlider("Votes Amount", 1, 20, selectedRespawnAmount, function(value)
+    selectedRespawnAmount = value
+end)
+
+my_own_section:AddButton("Vote Map", function()
+    local player = game.Players.LocalPlayer
+    if not player or not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+        return
+    end
+
+    savedPosition = player.Character.HumanoidRootPart.Position
+    respawning = true
+    local respawnCount = 0
+    local maxRespawns = selectedRespawnAmount
+
+    task.spawn(function()
+        while respawnCount < maxRespawns and respawning do
+            if player.Character and player.Character:FindFirstChild("Humanoid") then
+                player.Character.Humanoid.Health = 0
+                respawnCount += 1
+            end
+            task.wait(0.3)
+        end
+        respawning = false
+        savedPosition = nil
+    end)
+
+    player.CharacterAdded:Connect(function(char)
+        if savedPosition then
+            char:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(savedPosition)
+        end
+    end)
+end)
+
+my_own_section:AddLabel("Credits To <u><font color='rgb(0,255,0)'>@lzzzx</font></u>")
 
 local autoChatMessage = ""
 local autoChatDelay = 1
