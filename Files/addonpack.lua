@@ -1096,3 +1096,29 @@ other_section:AddButton("Join Server (JobID)", function()
     if joinJobID ~= "" then TeleportService:TeleportToPlaceInstance(game.PlaceId, joinJobID, LocalPlayer) end
 end)
 other_section:AddButton("Force Quit Game", function() game:Shutdown() end)
+other_section:AddButton("Mute Gun Sounds", function()
+    local Players = game:GetService("Players")
+    local player = Players.LocalPlayer
+
+    task.spawn(function()
+        while task.wait(1) do
+            local char = player.Character or player.CharacterAdded:Wait()
+            local gun = char:FindFirstChild("Gun")
+
+            if gun then
+                local handle = gun:FindFirstChild("Handle")
+                if handle then
+                    local reload = handle:FindFirstChild("Reload")
+                    if reload and reload:IsA("Sound") then
+                        reload.Volume = 0
+                    end
+
+                    local gunshot = handle:FindFirstChild("Gunshot")
+                    if gunshot and gunshot:IsA("Sound") then
+                        gunshot.Volume = 0
+                    end
+                end
+            end
+        end
+    end)
+end)
