@@ -9,6 +9,12 @@ local TeleportService = game:GetService("TeleportService")
 local Lighting = game:GetService("Lighting")
 local InsertService = game:GetService("InsertService")
 local LocalPlayer = Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local decalId = 101525741634578
+local loopJOB = false
+local selectedTargetType = "Nearest Player"
+local selectedPlayer = nil
 
 local InfiniteJumpEnabled = true
 local jumpConnection = nil
@@ -22,6 +28,10 @@ local lightning_section = shared.AddSection("Lightning | #4")
 local sound_section = shared.AddSection("Sound Logger | #5")
 local graphics_section = shared.AddSection("Graphics | #6")
 local other_section = shared.AddSection("Other | #7")
+
+local section = shared.AddSection("JOB Spray")
+
+-- pmo
 
 local function getWallRaycastResult()
     local character = LocalPlayer.Character
@@ -865,6 +875,125 @@ do
     end)
 end
 sound_section:AddLabel('Credits To: <font color="rgb(0,255,0)"><u>Unlucks (@unluckyau)</u></font>')
+
+local function getSprayTool()
+    local backpack = LocalPlayer:FindFirstChild("Backpack")
+    local char = LocalPlayer.Character
+    return (char and char:FindFirstChild("SprayPaint")) or (backpack and backpack:FindFirstChild("SprayPaint"))
+end
+
+local function equipTool(tool)
+    local char = LocalPlayer.Character
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    if hum and tool then
+        tool.Parent = char
+        hum:EquipTool(tool)
+    end
+end
+
+local function getTarget()
+    if selectedTargetType == "Nearest Player" then
+        local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if not root then return nil end
+        local nearest, shortest = nil, math.huge
+        for _,p in pairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                local torso = p.Character:FindFirstChild("Torso") or p.Character:FindFirstChild("UpperTorso") or p.Character:FindFirstChild("LowerTorso") or p.Character:FindFirstChild("HumanoidRootPart")
+                if torso then
+                    local d = (root.Position - torso.Position).Magnitude
+                    if d < shortest then
+                        shortest = d
+                        nearest = p
+                    end
+                end
+            end
+        end
+        return nearest
+    elseif selectedTargetType == "Random" then
+        local t = {}
+        for _,p in pairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer and p.Character then table.insert(t,p) end
+        end
+        return #t > 0 and t[math.random(1,#t)] or nil
+    elseif selectedTargetType == "Select Player" then
+        return selectedPlayer
+    end
+    return nil
+end
+
+local function spray(target)
+    local tool = getSprayTool()
+    if not tool or not target or not target.Character then return end
+    equipTool(tool)
+    local torso = target.Character:FindFirstChild("Torso") or target.Character:FindFirstChild("UpperTorso") or target.Character:FindFirstChild("LowerTorso") or target.Character:FindFirstChild("HumanoidRootPart")
+    if not torso then return end
+    local cframe = torso.CFrame + torso.CFrame.LookVector * 0.6
+    local remote = tool:FindFirstChildWhichIsA("RemoteEvent")
+    if remote then
+        remote:FireServer(decalId, Enum.NormalId.Front, 2048, torso, cframe)
+    else
+        warn("No remote found in spray tool!")
+    end
+end
+
+local function loopSpray()
+    while loopJOB do
+        local target = getTarget()
+        if target then spray(target) end
+        task.wait(14)
+    end
+end
+
+section:AddToggle("Loop Spray Paint", function(state)
+    loopJOB = state
+    if loopJOB then task.spawn(loopSpray) end
+end)
+
+section:AddDropdown("Target Type", {"Nearest Player","Random","Select Player"}, function(opt)
+    selectedTargetType = opt
+end)
+
+task.spawn(function()
+    while task.wait(1) do
+        local playerList = {}
+        for _,p in pairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer then
+                table.insert(playerList, p.Name)
+            end
+        end
+
+        
+        section:RemoveElement("Select Player")
+        section:AddDropdown("Select Player", playerList, function(opt)
+            selectedPlayer = Players:FindFirstChild(opt)
+            selectedTargetType = "Select Player"
+        end)
+    end
+end)
+
+section:AddTextBox("Decal ID", function(text)
+    local num = tonumber(text)
+    if num then
+        decalId = num
+    end
+end)
+
+section:AddButton("Spray Paint Player", function()
+    local target = getTarget()
+    if not target then return end
+    task.spawn(function()
+        for i = 1, 5 do
+                spray(target)
+            task.wait(13)
+        end
+    end)
+end)
+
+section:AddButton("Get Spray Tool", function()
+    local args = {"SprayPaint"}
+    ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Extras"):WaitForChild("ReplicateToy"):InvokeServer(unpack(args))
+    shared.Notify("Spray tool requested!", 2)
+end)
 
 local autoChatMessage = ""
 local autoChatDelay = 1
