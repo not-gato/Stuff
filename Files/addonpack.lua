@@ -1,3 +1,5 @@
+-- addon note: this is a false positive btw this script does not harm your account nor device, do not worry.
+
 local shared = odh_shared_plugins
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
@@ -28,13 +30,12 @@ local wallhop_section = shared.AddSection("Wallhop | #1")
 local cam_section = shared.AddSection("Camera Stretch | #2")
 local profile_section = shared.AddSection("Profile Picture Editor | #3")
 local lightning_section = shared.AddSection("Lightning | #4")
-local sound_section = shared.AddSection("Sound Logger | #5")
-local graphics_section = shared.AddSection("Graphics | #6")
-local section = shared.AddSection("Spray Paint | #7")
-local my_own_section = shared.AddSection("Map Voter | #8")
-local other_section = shared.AddSection("Other | #9")
+local graphics_section = shared.AddSection("Graphics | #5")
+local section = shared.AddSection("Spray Paint | #6")
+local my_own_section = shared.AddSection("Map Voter | #7")
+local other_section = shared.AddSection("Other | #8")
 
--- pmo
+-- reina does make gay things ✅️✅️✅️✅️✅️✅️
 
 local function getWallRaycastResult()
     local character = LocalPlayer.Character
@@ -857,31 +858,9 @@ end)
 
 graphics_section:AddLabel(postInfoText)
 
-local soundProperties = {["SoundId"]=true, ["Volume"]=true, ["PlaybackSpeed"]=true, ["Pitch"]=true}
-local soundLoggerActive = false
-do
-    local orig_newindex
-    sound_section:AddToggle("Sound Logger", function(state)
-        soundLoggerActive = state
-        if soundLoggerActive and not orig_newindex then
-            orig_newindex = hookmetamethod(game, "__newindex", newcclosure(function(self, key, value)
-                if not checkcaller() and typeof(self) == "Instance" and self:IsA("Sound") and soundProperties[key] then
-                    local ok = pcall(function()
-                        print(string.format("[SoundLogger] %s changed %s => %s", tostring(self), tostring(key), tostring(value)))
-                    end)
-                end
-                return orig_newindex(self, key, value)
-            end))
-        elseif not soundLoggerActive and orig_newindex then
-            orig_newindex = orig_newindex
-        end
-    end)
-end
-sound_section:AddLabel('Credits To: <font color="rgb(0,255,0)"><u>Unlucks (@unluckyau)</u></font>')
-
 local function getSprayTool()
-    local backpack = LocalPlayer:FindFirstChild("Backpack")
     local char = LocalPlayer.Character
+    local backpack = LocalPlayer:FindFirstChild("Backpack")
     return (char and char:FindFirstChild("SprayPaint")) or (backpack and backpack:FindFirstChild("SprayPaint"))
 end
 
@@ -899,7 +878,7 @@ local function getTarget()
         local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
         if not root then return nil end
         local nearest, shortest = nil, math.huge
-        for _,p in pairs(Players:GetPlayers()) do
+        for _, p in pairs(Players:GetPlayers()) do
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
                 local torso = p.Character:FindFirstChild("Torso") or p.Character:FindFirstChild("UpperTorso") or p.Character:FindFirstChild("LowerTorso") or p.Character:FindFirstChild("HumanoidRootPart")
                 if torso then
@@ -914,8 +893,8 @@ local function getTarget()
         return nearest
     elseif selectedTargetType == "Random" then
         local t = {}
-        for _,p in pairs(Players:GetPlayers()) do
-            if p ~= LocalPlayer and p.Character then table.insert(t,p) end
+        for _, p in pairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer and p.Character then table.insert(t, p) end
         end
         return #t > 0 and t[math.random(1,#t)] or nil
     elseif selectedTargetType == "Select Player" then
@@ -934,13 +913,8 @@ local function spray(target)
     local remote = tool:FindFirstChildWhichIsA("RemoteEvent")
     if remote then
         remote:FireServer(decalId, Enum.NormalId.Front, 2048, torso, cframe)
-    else
-        warn("No remote found in spray tool!")
     end
 end
-
-local loopJOB = false
-local loopThread
 
 local function loopSpray()
     while loopJOB do
@@ -965,27 +939,8 @@ section:AddDropdown("Target Type", {"Nearest Player","Random","Select Player"}, 
     selectedTargetType = opt
 end)
 
-local selectPlayerDropdown
-local function updatePlayerDropdown()
-    local playerList = {}
-    for _,p in pairs(Players:GetPlayers()) do
-        if p ~= LocalPlayer then
-            table.insert(playerList, p.Name)
-        end
-    end
-    if selectPlayerDropdown then
-        section:RemoveElement("Select Player")
-    end
-    selectPlayerDropdown = section:AddDropdown("Select Player", playerList, function(opt)
-        selectedPlayer = Players:FindFirstChild(opt)
-        selectedTargetType = "Select Player"
-    end)
-end
-
-task.spawn(function()
-    while task.wait(1) do
-        updatePlayerDropdown()
-    end
+section:AddPlayerDropdown("Select Player", function(player)
+    selectedPlayer = player
 end)
 
 section:AddTextBox("Decal ID", function(text)
@@ -1122,3 +1077,7 @@ other_section:AddButton("Mute Gun Sounds", function()
         end
     end)
 end)
+
+warn("[#]: Loaded")
+-- iam back
+-- hi back iam gato
