@@ -3,31 +3,37 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "Bind"
-screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-screenGui.Parent = player:WaitForChild("PlayerGui")
+local screenGui = player:WaitForChild("PlayerGui"):FindFirstChild("Bind")
+if not screenGui then
+    screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "Bind"
+    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    screenGui.Parent = player:WaitForChild("PlayerGui")
+end
 
-local bindArea = Instance.new("Frame")
-bindArea.Name = "BindArea"
-bindArea.BorderSizePixel = 0
-bindArea.BackgroundTransparency = 1
-bindArea.Size = UDim2.new(0.4, 0, 0.36, 0)
-bindArea.Position = UDim2.new(0.58879, 0, 0.02086, 0)
-bindArea.Parent = screenGui
+local bindArea = screenGui:FindFirstChild("BindArea")
+if not bindArea then
+    bindArea = Instance.new("Frame")
+    bindArea.Name = "BindArea"
+    bindArea.BorderSizePixel = 0
+    bindArea.BackgroundTransparency = 1
+    bindArea.Size = UDim2.new(0.4, 0, 0.36, 0)
+    bindArea.Position = UDim2.new(0.58879, 0, 0.02086, 0)
+    bindArea.Parent = screenGui
 
-local padding = Instance.new("UIPadding")
-padding.PaddingTop = UDim.new(0, 10)
-padding.PaddingBottom = UDim.new(0, 10)
-padding.PaddingLeft = UDim.new(0, 10)
-padding.PaddingRight = UDim.new(0, 10)
-padding.Parent = bindArea
+    local padding = Instance.new("UIPadding")
+    padding.PaddingTop = UDim.new(0, 10)
+    padding.PaddingBottom = UDim.new(0, 10)
+    padding.PaddingLeft = UDim.new(0, 10)
+    padding.PaddingRight = UDim.new(0, 10)
+    padding.Parent = bindArea
 
-local layout = Instance.new("UIGridLayout")
-layout.CellSize = UDim2.new(0, 35, 0, 35) -- smaller buttons
-layout.SortOrder = Enum.SortOrder.LayoutOrder
-layout.CellPadding = UDim2.new(0, 12, 0, 12) -- more spacing
-layout.Parent = bindArea
+    local layout = Instance.new("UIGridLayout")
+    layout.CellSize = UDim2.new(0, 35, 0, 35)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.CellPadding = UDim2.new(0, 12, 0, 12)
+    layout.Parent = bindArea
+end
 
 local function spinGradient(gradient)
     task.spawn(function()
@@ -43,6 +49,11 @@ local function spinGradient(gradient)
 end
 
 function M:CreateBindable(name, callback)
+    local existingButton = bindArea:FindFirstChild(name or "Unknown")
+    if existingButton then
+        existingButton:Destroy()
+    end
+
     local button = Instance.new("TextButton")
     button.Name = name or "Unknown"
     button.Text = name or "Bindable Button"
@@ -56,12 +67,16 @@ function M:CreateBindable(name, callback)
     button.Size = UDim2.new(0, 35, 0, 35)
     button.Parent = bindArea
 
+    local isToggled = false
+    local toggledColor = Color3.fromRGB(0, 255, 0)
+    local normalColor = Color3.fromRGB(255, 255, 255)
+
     local uicorner = Instance.new("UICorner", button)
     uicorner.CornerRadius = UDim.new(0.5, 0)
 
     local uistroke = Instance.new("UIStroke", button)
     uistroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    uistroke.Color = Color3.fromRGB(255, 255, 255)
+    uistroke.Color = normalColor
 
     local uigradient = Instance.new("UIGradient")
     uigradient.Rotation = 0
@@ -77,18 +92,43 @@ function M:CreateBindable(name, callback)
     clickSound.SoundId = "rbxassetid://3868133279"
     clickSound.Volume = 1
 
-    if callback then
-        button.MouseButton1Click:Connect(function()
-            clickSound:Play()
-            callback()
-        end)
-    else
-        button.MouseButton1Click:Connect(function()
-            clickSound:Play()
-        end)
+    local function updateToggleState()
+        if isToggled then
+            uistroke.Color = toggledColor
+            button.BackgroundTransparency = 0.3
+        else
+            uistroke.Color = normalColor
+            button.BackgroundTransparency = 0.7
+        end
     end
 
-    return button
+    button.MouseButton1Click:Connect(function()
+        clickSound:Play()
+        isToggled = not isToggled
+        updateToggleState()
+        
+        if callback then
+            callback(isToggled)
+        end
+    end)
+
+    return button, function() return isToggled end
+end
+
+function M:RemoveBind(name)
+    if not name then
+        warn("RemoveBind: No name provided")
+        return false
+    end
+    
+    local button = bindArea:FindFirstChild(name)
+    if button then
+        button:Destroy()
+        return true
+    else
+        warn("RemoveBind: Button '" .. name .. "' not found")
+        return false
+    end
 end
 
 M.ScreenGui = screenGui
