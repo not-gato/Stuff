@@ -1,5 +1,6 @@
--- addon note: this is a false positive btw this script does not harm your account nor device, do not worry.
+-- WARNING: THIS IS A FALSE POSITIVE, THIS SCRIPT DOES NOT HARM YOUR DEVICE OR ACCOUNT, WE ONLY CREATE FILES OR CALL LOADSTRINGS(), CHECK FOR YOURSELF!
 
+local BindModule = loadstring(game:HttpGet("https://github.com/not-gato/Stuff/raw/refs/heads/main/BindButton.lua"))()
 local Shared = odh_shared_plugins
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
@@ -13,7 +14,6 @@ local InsertService = game:GetService("InsertService")
 local LocalPlayer = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MarketplaceService = game:GetService("MarketplaceService")
-
 local SavedPosition = nil
 local Respawning = false
 local SelectedRespawnAmount = 12
@@ -24,7 +24,6 @@ local SelectedTargetType = "Nearest Player"
 local SelectedPlayer = nil
 local InfiniteJumpEnabled = true
 local JumpConnection = nil
-
 local RaycastParams = RaycastParams.new()
 RaycastParams.FilterType = Enum.RaycastFilterType.Blacklist
 
@@ -38,19 +37,19 @@ local MyOwnSection = Shared.AddSection("Map Voter | #7")
 local PerformanceSection = Shared.AddSection("Performance | #8")
 local OtherSection = Shared.AddSection("Other | #9")
 
--- reina does make gay things ✅️✅️✅️✅️✅️✅️
+-- REINA DOES MAKE GAY THINGS ✅️✅️✅️✅️✅️✅️✅️✅️✅️
 
 local function GetWallRaycastResult()
     local Character = LocalPlayer.Character
     if not Character then return nil end
     local Hrp = Character:FindFirstChild("HumanoidRootPart")
     if not Hrp then return nil end
-    
+        
     RaycastParams.FilterDescendantsInstances = {Character}
-    
+        
     local ClosestHit, MinDistance = nil, 3
     local HrpCF = Hrp.CFrame
-    
+        
     for i = 0,7 do
         local Angle = math.rad(i*45)
         local Dir = (HrpCF*CFrame.Angles(0,Angle,0)).LookVector
@@ -60,13 +59,13 @@ local function GetWallRaycastResult()
             ClosestHit = Ray
         end
     end
-    
+        
     local BlockCastOrigin = HrpCF*CFrame.new(0,-1,-0.5)
     local BlockResult = Workspace:Blockcast(BlockCastOrigin, Vector3.new(1.5,1,0.5), HrpCF.LookVector*1.5, RaycastParams)
     if BlockResult and BlockResult.Instance and BlockResult.Distance < MinDistance then
         ClosestHit = BlockResult
     end
-    
+        
     return ClosestHit
 end
 
@@ -75,16 +74,16 @@ local function PerformFaceWallJump()
     local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
     local RootPart = Character and Character:FindFirstChild("HumanoidRootPart")
     local Camera = Workspace.CurrentCamera
-    
+        
     if not (Humanoid and RootPart and Camera and Humanoid:GetState() ~= Enum.HumanoidStateType.Dead) then return end
-    
+        
     local Wall = GetWallRaycastResult()
     if not Wall then return end
-    
+        
     local MaxR, MaxL = math.rad(20), math.rad(-100)
     local Base = Vector3.new(Wall.Normal.X,0,Wall.Normal.Z)
     if Base.Magnitude > 0 then Base = Base.Unit end
-    
+        
     if Base.Magnitude < 0.1 then
         local Dir = (Wall.Position - RootPart.Position)*Vector3.new(1,0,1)
         if Dir.Magnitude > 0 then Base = -Dir.Unit end
@@ -94,30 +93,30 @@ local function PerformFaceWallJump()
             if Base.Magnitude < 0.1 then Base = Vector3.new(0,0,1) end
         end
     end
-    
+        
     Base = Vector3.new(Base.X,0,Base.Z)
     if Base.Magnitude > 0 then Base = Base.Unit end
     if Base.Magnitude < 0.1 then Base = Vector3.new(0,0,1) end
-    
+        
     local HorLook = Vector3.new(Camera.CFrame.LookVector.X,0,Camera.CFrame.LookVector.Z)
     if HorLook.Magnitude > 0 then HorLook = HorLook.Unit else HorLook = Base end
-    
+        
     local Dot = math.clamp(Base:Dot(HorLook), -1,1)
     local Angle = math.acos(Dot)
     local Cross = Base:Cross(HorLook)
     local Sign = -math.sign(Cross.Y)
     if Sign == 0 then Angle = 0 end
-    
+        
     local FinalAngle = 0
     if Sign == 1 then FinalAngle = math.min(Angle,MaxR)
     elseif Sign == -1 then FinalAngle = math.min(Angle,MaxL) end
-    
+        
     local Adj = CFrame.Angles(0, FinalAngle*Sign, 0)
     local LookDir = Adj:VectorToWorldSpace(Base)
     RootPart.CFrame = CFrame.lookAt(RootPart.Position, RootPart.Position + LookDir)
-    
+        
     RunService.Heartbeat:Wait()
-    
+        
     if Humanoid:GetState() ~= Enum.HumanoidStateType.Dead then
         Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
         RootPart.CFrame = RootPart.CFrame*CFrame.Angles(0,-1,0)
@@ -131,6 +130,17 @@ end
 
 local WallhopToggle = false
 WallhopSection:AddToggle("WallHop Toggle", function(state) WallhopToggle = state end)
+
+WallhopSection:AddToggle("WallHop Bindable Button", function(state)
+    if state then
+        BindModule:CreateBindable("WallHop", function(toggled)
+            WallhopToggle = toggled
+        end)
+    else
+        BindModule:RemoveBind("WallHop")
+    end
+end)
+
 WallhopSection:AddKeybind("WallHop Jump Key", "J", PerformFaceWallJump)
 
 JumpConnection = UserInputService.JumpRequest:Connect(function()
@@ -208,17 +218,17 @@ ProfileSection:AddButton("Apply Selected Profile Picture", function()
             if Data and Data.avatar then
                 local AvatarUrl = "https://cdn.discordapp.com/avatars/"..UserId.."/"..Data.avatar..".png?size=1024"
                 SetProfilePicture(AvatarUrl)
-                print("[SUCCESS]: Owner profile picture applied.")
+                Shared.Notify("Owner profile picture applied.", 1)
             else
-                print("[ERROR]: Could not fetch owner avatar.")
+                Shared.Notify("Could not fetch owner avatar.", 2)
             end
         else
-            print("[ERROR]: Discord API fetch failed.")
+            Shared.Notify("Discord API fetch failed.", 2)
         end
     else
         if ProfileLinks[SelectedProfile] then
             SetProfilePicture(ProfileLinks[SelectedProfile])
-            print("[SUCCESS]: Profile picture applied: "..SelectedProfile)
+            Shared.Notify("Profile picture applied: "..SelectedProfile, 1)
         end
     end
 end)
@@ -228,17 +238,16 @@ ProfileSection:AddTextBox("Custom Profile Picture Link", function(text) CustomPr
 ProfileSection:AddButton("Apply Custom Profile Picture", function()
     if CustomProfileLink ~= "" then
         SetProfilePicture(CustomProfileLink)
-        print("[SUCCESS]: Custom profile picture applied.")
+        Shared.Notify("Custom profile picture applied.", 1)
     end
 end)
 
 ProfileSection:AddButton("Remove Profile Picture", function()
     local FileName = "Ixry Shizuka/avatar.png"
     if isfile(FileName) then pcall(delfile, FileName) end
-    print("[SUCCESS]: Profile picture removed.")
+    Shared.Notify("Profile picture removed.", 1)
 end)
 
--- Converting skybox variables to PascalCase
 local FogStart, FogEnd, FogColor = 0, 1000, Color3.new(1,1,1)
 
 local SkyboxPresets = {
@@ -559,9 +568,9 @@ LightningSection:AddDropdown("Predefined Skyboxes", PresetKeys, function(selecte
 LightningSection:AddButton("Apply Selected Predefined Skybox", function()
     if SelectedSkybox and SkyboxPresets[SelectedSkybox] then
         SkyboxPresets[SelectedSkybox]()
-        print("[SUCCESS]: Applied "..SelectedSkybox)
+        Shared.Notify("Applied "..SelectedSkybox, 1)
     else
-        print("[WARNING]: No skybox selected or preset missing.")
+        Shared.Notify("No skybox selected or preset missing.", 3)
     end
 end)
 
@@ -598,9 +607,9 @@ LightningSection:AddButton("Apply Custom Skybox", function()
     Sky.Parent = Lighting
     task.wait(0)
     if Lighting:FindFirstChild("CustomSky") then
-        print("[SUCCESS]: Skybox Set Successfully")
+        Shared.Notify("Skybox Set Successfully", 1)
     else
-        print("[ERROR]: Skybox Set Was Unsuccessful!")
+        Shared.Notify("Skybox Set Was Unsuccessful!", 2)
     end
 end)
 
@@ -611,7 +620,7 @@ LightningSection:AddButton("Apply Creator Store Sky", function()
     local Raw = tostring(CreatorStoreSkyAssetId or "")
     local Digits = Raw:match("(%d+)")
     if not Digits then
-        print("[ERROR]: Invalid AssetID.")
+        Shared.Notify("Invalid AssetID.", 2)
         return
     end
     local AssetId = tonumber(Digits)
@@ -630,7 +639,7 @@ LightningSection:AddButton("Apply Creator Store Sky", function()
         end
     end
     if not LoadedRoot then
-        print("[ERROR]: Failed to load asset: "..Digits)
+        Shared.Notify("Failed to load asset: "..Digits, 2)
         return
     end
     local AllowedClass = {
@@ -662,7 +671,7 @@ LightningSection:AddButton("Apply Creator Store Sky", function()
     end
     ApplyFrom(LoadedRoot)
     pcall(function() LoadedRoot:Destroy() end)
-    print("[SUCCESS]: Creator Store Sky applied from AssetID: "..Digits)
+    Shared.Notify("Creator Store Sky applied from AssetID: "..Digits, 1)
 end)
 
 local OriginalSkyProps = {}
@@ -712,7 +721,7 @@ LightningSection:AddToggle("Remove Celestial Bodies (Sun & Moon)", function(stat
         RemoveCelestialsEnabled = false
         if RemoveCelestialsConn then RemoveCelestialsConn:Disconnect(); RemoveCelestialsConn = nil end
         RestoreAllSkies()
-        print("[SUCCESS]: Celestial bodies restored.")
+        Shared.Notify("Celestial bodies restored.", 1)
     end
 end)
 
@@ -729,7 +738,7 @@ LightningSection:AddButton("Apply Fog", function()
     Lighting.FogStart = FogStart
     Lighting.FogEnd = FogEnd
     Lighting.FogColor = FogColor
-    print("[SUCCESS]: Fog applied.")
+    Shared.Notify("Fog applied.", 1)
 end)
 
 local LightingTechMap = {
@@ -738,6 +747,7 @@ local LightingTechMap = {
     Voxel = Enum.Technology.Voxel,
     Compatibility = Enum.Technology.Compatibility
 }
+
 local LightingTechs = {"Future", "ShadowMap", "Voxel", "Compatibility"}
 local SelectedTech = "Future"
 
@@ -746,19 +756,19 @@ GraphicsSection:AddDropdown("Lighting Technology", LightingTechs, function(selec
 GraphicsSection:AddButton("Apply Selected Lighting Technology", function()
     if SelectedTech and LightingTechMap[SelectedTech] then
         Lighting.Technology = LightingTechMap[SelectedTech]
-        print("[SUCCESS]: Lighting technology applied: "..SelectedTech)
+        Shared.Notify("Lighting technology applied: "..SelectedTech, 1)
     else
-        print("[ERROR]: Invalid lighting technology.")
+        Shared.Notify("Invalid lighting technology.", 2)
     end
 end)
 
 GraphicsSection:AddToggle("No Global Shadows", function(state)
     if state then
         Lighting.GlobalShadows = false
-        print("[SUCCESS]: Global shadows disabled.")
+        Shared.Notify("Global shadows disabled.", 1)
     else
         Lighting.GlobalShadows = true
-        print("[SUCCESS]: Global shadows enabled.")
+        Shared.Notify("Global shadows enabled.", 1)
     end
 end)
 
@@ -767,7 +777,7 @@ GraphicsSection:AddTextBox("Shadow Softness", function(text) CurrentShadowSoftne
 
 GraphicsSection:AddButton("Apply Shadow Softness", function()
     Lighting.ShadowSoftness = CurrentShadowSoftness
-    print("[SUCCESS]: Shadow softness set to "..tostring(CurrentShadowSoftness)..".")
+    Shared.Notify("Shadow softness set to "..tostring(CurrentShadowSoftness)..".", 1)
 end)
 
 local BlurIntensity = 0
@@ -787,14 +797,14 @@ GraphicsSection:AddButton("Apply Blur", function()
     pcall(function() Blur.Size = BlurIntensity end)
     Blur.Name = "CustomBlur"
     Blur.Parent = Lighting
-    print("[SUCCESS]: Blur applied.")
+    Shared.Notify("Blur applied.", 1)
 end)
 
 GraphicsSection:AddButton("Remove Blur", function()
     for _, v in ipairs(Lighting:GetChildren()) do
         if v:IsA("BlurEffect") and v.Name ~= "NewltemBlur" and v.Name ~= "MenuBlur" then pcall(function() v:Destroy() end) end
     end
-    print("[SUCCESS]: Blur removed.")
+    Shared.Notify("Blur removed.", 1)
 end)
 
 GraphicsSection:AddTextBox("Bloom Intensity", function(text) BloomIntensity = tonumber(text) or BloomIntensity end)
@@ -809,12 +819,12 @@ GraphicsSection:AddButton("Apply Bloom", function()
     pcall(function() Bloom.Threshold = BloomThreshold end)
     Bloom.Name = "CustomBloom"
     Bloom.Parent = Lighting
-    print("[SUCCESS]: Bloom applied.")
+    Shared.Notify("Bloom applied.", 1)
 end)
 
 GraphicsSection:AddButton("Remove Bloom", function()
     for _, v in ipairs(Lighting:GetChildren()) do if v:IsA("BloomEffect") and v.Name == "CustomBloom" then pcall(function() v:Destroy() end) end end
-    print("[SUCCESS]: Bloom removed.")
+    Shared.Notify("Bloom removed.", 1)
 end)
 
 GraphicsSection:AddTextBox("CCE Brightness", function(text) CceBrightness = tonumber(text) or CceBrightness end)
@@ -839,12 +849,12 @@ GraphicsSection:AddButton("Apply CCE", function()
     pcall(function() Cce.TintColor = CceColor end)
     Cce.Name = "CustomCCE"
     Cce.Parent = Lighting
-    print("[SUCCESS]: Color Correction Effect applied.")
+    Shared.Notify("Color Correction Effect applied.", 1)
 end)
 
 GraphicsSection:AddButton("Remove CCE", function()
     for _, v in ipairs(Lighting:GetChildren()) do if v:IsA("ColorCorrectionEffect") and v.Name == "CustomCCE" then pcall(function() v:Destroy() end) end end
-    print("[SUCCESS]: Color Correction Effect removed.")
+    Shared.Notify("Color Correction Effect removed.", 1)
 end)
 
 GraphicsSection:AddTextBox("D.O.F.E. Far Intensity", function(text) DofeFarIntensity = tonumber(text) or DofeFarIntensity end)
@@ -861,12 +871,12 @@ GraphicsSection:AddButton("Apply D.O.F.E.", function()
     pcall(function() Dofe.NearIntensity = DofeNearIntensity end)
     Dofe.Name = "CustomDOFE"
     Dofe.Parent = Lighting
-    print("[SUCCESS]: Depth Of Field Effect applied.")
+    Shared.Notify("Depth Of Field Effect applied.", 1)
 end)
 
 GraphicsSection:AddButton("Remove D.O.F.E.", function()
     for _, v in ipairs(Lighting:GetChildren()) do if v:IsA("DepthOfFieldEffect") and v.Name == "CustomDOFE" then pcall(function() v:Destroy() end) end end
-    print("[SUCCESS]: Depth Of Field Effect removed.")
+    Shared.Notify("Depth Of Field Effect removed.", 1)
 end)
 
 GraphicsSection:AddLabel(PostInfoText)
@@ -977,10 +987,30 @@ Section:AddButton("Spray Paint Player", function()
     end)
 end)
 
+Section:AddToggle("Spray Paint Player Bindable Button", function(state)
+    if state then
+        BindModule:CreateBindable("SprayPaint", function(toggled)
+            if toggled then
+                local Target = GetTarget()
+                if Target then
+                    task.spawn(function()
+                        for i = 1, 5 do
+                            Spray(Target)
+                            task.wait(13)
+                        end
+                    end)
+                end
+            end
+        end)
+    else
+        BindModule:RemoveBind("SprayPaint")
+    end
+end)
+
 Section:AddButton("Get Spray Tool", function()
     local Args = {"SprayPaint"}
     ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Extras"):WaitForChild("ReplicateToy"):InvokeServer(unpack(Args))
-    print("[SUCCESS]: Spray tool requested!")
+    Shared.Notify("Spray tool requested!", 1)
 end)
 
 MyOwnSection:AddSlider("Votes Amount", 1, 20, SelectedRespawnAmount, function(value)
@@ -1014,6 +1044,41 @@ MyOwnSection:AddButton("Vote Map", function()
     end)
 end)
 
+MyOwnSection:AddToggle("Vote Map Bindable Button", function(state)
+    if state then
+        BindModule:CreateBindable("VoteMap", function(toggled)
+            if toggled then
+                local Player = game.Players.LocalPlayer
+                if not Player or not Player.Character or not Player.Character:FindFirstChild("HumanoidRootPart") then
+                    return
+                end
+                SavedPosition = Player.Character.HumanoidRootPart.Position
+                Respawning = true
+                local RespawnCount = 0
+                local MaxRespawns = SelectedRespawnAmount
+                task.spawn(function()
+                    while RespawnCount < MaxRespawns and Respawning do
+                        if Player.Character and Player.Character:FindFirstChild("Humanoid") then
+                            Player.Character.Humanoid.Health = 0
+                            RespawnCount += 1
+                        end
+                        task.wait(0.3)
+                    end
+                    Respawning = false
+                    SavedPosition = nil
+                end)
+                Player.CharacterAdded:Connect(function(char)
+                    if SavedPosition then
+                        char:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(SavedPosition)
+                    end
+                end)
+            end
+        end)
+    else
+        BindModule:RemoveBind("VoteMap")
+    end
+end)
+
 MyOwnSection:AddLabel("Credits To <u><font color='rgb(0,255,0)'>@lzzzx</font></u>")
 
 local AutoChatMessage = ""
@@ -1041,7 +1106,7 @@ OtherSection:AddButton("Server Hop", function()
         return HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..PlaceId.."/servers/Public?sortOrder=Asc&limit=100"))
     end)
     if not Success or not Servers then 
-        print("[ERROR]: Server list fetch failed.")
+        Shared.Notify("Server list fetch failed.", 2)
         return 
     end
     local NextCursor = Servers.nextPageCursor
@@ -1065,13 +1130,38 @@ end)
 
 OtherSection:AddButton("Rejoin", function() TeleportService:Teleport(game.PlaceId, LocalPlayer) end)
 
+OtherSection:AddToggle("Rejoin Bindable Button", function(state)
+    if state then
+        BindModule:CreateBindable("Rejoin", function(toggled)
+            if toggled then
+                TeleportService:Teleport(game.PlaceId, LocalPlayer)
+            end
+        end)
+    else
+        BindModule:RemoveBind("Rejoin")
+    end
+end)
+
 local JoinJobID = ""
 OtherSection:AddTextBox("Server JobID", function(text) JoinJobID = text end)
+
 OtherSection:AddButton("Join Server (JobID)", function()
     if JoinJobID ~= "" then TeleportService:TeleportToPlaceInstance(game.PlaceId, JoinJobID, LocalPlayer) end
 end)
 
 OtherSection:AddButton("Force Quit Game", function() game:Shutdown() end)
+
+OtherSection:AddToggle("FQG Bindable Button", function(state)
+    if state then
+        BindModule:CreateBindable("FQG", function(toggled)
+            if toggled then
+                game:Shutdown()
+            end
+        end)
+    else
+        BindModule:RemoveBind("FQG")
+    end
+end)
 
 OtherSection:AddButton("Mute Gun Sounds", function()
     local Players = game:GetService("Players")
@@ -1110,7 +1200,7 @@ PerformanceSection:AddToggle("Remove All Materials", function(state)
                 obj.Material = Enum.Material.Plastic
             end
         end
-        print("[SUCCESS]: All materials removed.")
+        Shared.Notify("All materials removed.", 1)
     else
         for obj, material in pairs(OriginalMaterials) do
             if obj and obj.Parent then
@@ -1118,7 +1208,32 @@ PerformanceSection:AddToggle("Remove All Materials", function(state)
             end
         end
         OriginalMaterials = {}
-        print("[SUCCESS]: Materials restored.")
+        Shared.Notify("Materials restored.", 1)
+    end
+end)
+
+PerformanceSection:AddToggle("Remove All Materials Bindable Button", function(state)
+    if state then
+        BindModule:CreateBindable("RemoveMaterials", function(toggled)
+            if toggled then
+                OriginalMaterials = {}
+                for _, obj in pairs(Workspace:GetDescendants()) do
+                    if obj:IsA("BasePart") then
+                        OriginalMaterials[obj] = obj.Material
+                        obj.Material = Enum.Material.Plastic
+                    end
+                end
+            else
+                for obj, material in pairs(OriginalMaterials) do
+                    if obj and obj.Parent then
+                        obj.Material = material
+                    end
+                end
+                OriginalMaterials = {}
+            end
+        end)
+    else
+        BindModule:RemoveBind("RemoveMaterials")
     end
 end)
 
@@ -1127,11 +1242,28 @@ PerformanceSection:AddToggle("Low Graphics", function(state)
         OriginalTechnology = Lighting.Technology
         pcall(function() game:SetFastFlagForTesting("RBX_LightingTechnologyUnifiedMigration", false) end)
         Lighting.Technology = Enum.Technology.Compatibility
-        print("[SUCCESS]: Low graphics mode enabled.")
+        Shared.Notify("Low graphics mode enabled.", 1)
     else
         pcall(function() game:SetFastFlagForTesting("RBX_LightingTechnologyUnifiedMigration", true) end)
         Lighting.Technology = OriginalTechnology
-        print("[SUCCESS]: Low graphics mode disabled.")
+        Shared.Notify("Low graphics mode disabled.", 1)
+    end
+end)
+
+PerformanceSection:AddToggle("Low Graphics Bindable Button", function(state)
+    if state then
+        BindModule:CreateBindable("LowGraphics", function(toggled)
+            if toggled then
+                OriginalTechnology = Lighting.Technology
+                pcall(function() game:SetFastFlagForTesting("RBX_LightingTechnologyUnifiedMigration", false) end)
+                Lighting.Technology = Enum.Technology.Compatibility
+            else
+                pcall(function() game:SetFastFlagForTesting("RBX_LightingTechnologyUnifiedMigration", true) end)
+                Lighting.Technology = OriginalTechnology
+            end
+        end)
+    else
+        BindModule:RemoveBind("LowGraphics")
     end
 end)
 
@@ -1149,7 +1281,7 @@ PerformanceSection:AddToggle("Destroy All Player Accessories", function(state)
                 end
             end
         end
-        print("[SUCCESS]: All player accessories destroyed.")
+        Shared.Notify("All player accessories destroyed.", 1)
     else
         for player, accessories in pairs(OriginalAccessories) do
             if player and player.Character then
@@ -1160,7 +1292,40 @@ PerformanceSection:AddToggle("Destroy All Player Accessories", function(state)
             end
         end
         OriginalAccessories = {}
-        print("[SUCCESS]: Player accessories restored.")
+        Shared.Notify("Player accessories restored.", 1)
+    end
+end)
+
+PerformanceSection:AddToggle("Destroy All Player Accessories Bindable Button", function(state)
+    if state then
+        BindModule:CreateBindable("DestroyAccessories", function(toggled)
+            if toggled then
+                OriginalAccessories = {}
+                for _, player in pairs(Players:GetPlayers()) do
+                    if player.Character then
+                        OriginalAccessories[player] = {}
+                        for _, obj in pairs(player.Character:GetChildren()) do
+                            if obj:IsA("Accessory") then
+                                table.insert(OriginalAccessories[player], obj:Clone())
+                                obj:Destroy()
+                            end
+                        end
+                    end
+                end
+            else
+                for player, accessories in pairs(OriginalAccessories) do
+                    if player and player.Character then
+                        for _, accessory in pairs(accessories) do
+                            local newAccessory = accessory:Clone()
+                            newAccessory.Parent = player.Character
+                        end
+                    end
+                end
+                OriginalAccessories = {}
+            end
+        end)
+    else
+        BindModule:RemoveBind("DestroyAccessories")
     end
 end)
 
@@ -1170,7 +1335,7 @@ PerformanceSection:AddButton("Destroy All Particles", function()
             obj:Destroy()
         end
     end
-    print("[SUCCESS]: All particles destroyed.")
+    Shared.Notify("All particles destroyed.", 1)
 end)
 
 warn("[#]: Loaded")
@@ -1180,3 +1345,5 @@ if game.PlaceId ~= 142823291 then
 end
 
 warn("[#]: Game Detected: ".. MarketplaceService:GetProductInfo(game.PlaceId).Name .." Supported: Yes")
+
+-- hi rmd
