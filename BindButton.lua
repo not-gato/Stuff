@@ -59,7 +59,6 @@ function M:CreateBindable(name, callback)
     button.Text = name or "Bindable Button"
     button.TextWrapped = true
     button.TextScaled = false
-    button.TextFits = true
     button.TextSize = 14
     button.TextColor3 = Color3.fromRGB(255,255,255)
     button.BackgroundColor3 = Color3.fromRGB(0,0,0)
