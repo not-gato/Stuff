@@ -58,13 +58,15 @@ function M:CreateBindable(name, callback)
     button.Name = name or "Unknown"
     button.Text = name or "Bindable Button"
     button.TextWrapped = true
-    button.TextScaled = true
+    button.TextScaled = false
+    button.TextFits = true
     button.TextSize = 14
     button.TextColor3 = Color3.fromRGB(255,255,255)
     button.BackgroundColor3 = Color3.fromRGB(0,0,0)
-    button.BackgroundTransparency = 0.7
+    button.BackgroundTransparency = 1
     button.BorderSizePixel = 0
     button.Size = UDim2.new(0, 35, 0, 35)
+    button.FontFace = Font.fromId(12187375422)
     button.Parent = bindArea
 
     local isToggled = false
@@ -95,10 +97,8 @@ function M:CreateBindable(name, callback)
     local function updateToggleState()
         if isToggled then
             uistroke.Color = toggledColor
-            button.BackgroundTransparency = 0.3
         else
             uistroke.Color = normalColor
-            button.BackgroundTransparency = 0.7
         end
     end
 
