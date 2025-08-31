@@ -43,7 +43,10 @@ function M:CreateBindable(name, callback)
         ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,0))
     }
 
-    if callback then button.MouseButton1Click:Connect(callback) end
+    if callback then
+        button.MouseButton1Click:Connect(callback)
+    end
+
     return button
 end
 
