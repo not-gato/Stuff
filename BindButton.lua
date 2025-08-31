@@ -11,8 +11,8 @@ local bindArea = Instance.new("Frame")
 bindArea.Name = "BindArea"
 bindArea.BorderSizePixel = 0
 bindArea.BackgroundTransparency = 1
-bindArea.Size = UDim2.new(0.4,0,0.36,0)
-bindArea.Position = UDim2.new(0.58879,0,0.02086,0)
+bindArea.Size = UDim2.new(0.4, 0, 0.36, 0)
+bindArea.Position = UDim2.new(0.58879, 0, 0.02086, 0)
 bindArea.Parent = screenGui
 
 function M:CreateBindable(name, callback)
@@ -26,22 +26,23 @@ function M:CreateBindable(name, callback)
     button.BackgroundColor3 = Color3.fromRGB(0,0,0)
     button.BackgroundTransparency = 0.7
     button.BorderSizePixel = 0
-    button.Size = UDim2.new(0,100,0,100)
+    button.Size = UDim2.new(0, 60, 0, 60) -- smaller, still a circle
     button.Parent = bindArea
 
     local uicorner = Instance.new("UICorner", button)
-    uicorner.CornerRadius = UDim.new(0.5,0)
+    uicorner.CornerRadius = UDim.new(0.5, 0) -- always circle
 
     local uistroke = Instance.new("UIStroke", button)
     uistroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    uistroke.Color = Color3.fromRGB(255,255,255)
+    uistroke.Color = Color3.fromRGB(255, 255, 255)
 
-    local uigradient = Instance.new("UIGradient", button)
+    local uigradient = Instance.new("UIGradient")
     uigradient.Rotation = 45
     uigradient.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, Color3.fromRGB(0,107,255)),
         ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,0))
     }
+    uigradient.Parent = uistroke -- ✅ correctly applied to stroke
 
     if callback then
         button.MouseButton1Click:Connect(callback)
