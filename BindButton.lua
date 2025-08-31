@@ -1,5 +1,6 @@
 local M = {}
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 
 local screenGui = Instance.new("ScreenGui")
@@ -23,10 +24,23 @@ padding.PaddingRight = UDim.new(0, 5)
 padding.Parent = bindArea
 
 local layout = Instance.new("UIGridLayout")
-layout.CellSize = UDim2.new(0, 60, 0, 60) -- each button still a circle
+layout.CellSize = UDim2.new(0, 45, 0, 45)
 layout.SortOrder = Enum.SortOrder.LayoutOrder
-layout.CellPadding = UDim2.new(0, 5, 0, 5)
+layout.CellPadding = UDim2.new(0, 6, 0, 6)
 layout.Parent = bindArea
+
+local function spinGradient(gradient)
+    task.spawn(function()
+        local direction = 1
+        while gradient.Parent do
+            local goal = {Rotation = gradient.Rotation + (180 * direction)}
+            local tween = TweenService:Create(gradient, TweenInfo.new(3, Enum.EasingStyle.Linear), goal)
+            tween:Play()
+            tween.Completed:Wait()
+            direction = -direction
+        end
+    end)
+end
 
 function M:CreateBindable(name, callback)
     local button = Instance.new("TextButton")
@@ -39,7 +53,7 @@ function M:CreateBindable(name, callback)
     button.BackgroundColor3 = Color3.fromRGB(0,0,0)
     button.BackgroundTransparency = 0.7
     button.BorderSizePixel = 0
-    button.Size = UDim2.new(0, 60, 0, 60)
+    button.Size = UDim2.new(0, 45, 0, 45)
     button.Parent = bindArea
 
     local uicorner = Instance.new("UICorner", button)
@@ -50,15 +64,28 @@ function M:CreateBindable(name, callback)
     uistroke.Color = Color3.fromRGB(255, 255, 255)
 
     local uigradient = Instance.new("UIGradient")
-    uigradient.Rotation = 45
+    uigradient.Rotation = 0
     uigradient.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, Color3.fromRGB(0,107,255)),
         ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,0))
     }
     uigradient.Parent = uistroke
 
+    spinGradient(uigradient)
+
+    local clickSound = Instance.new("Sound", button)
+    clickSound.SoundId = "rbxassetid://3868133279"
+    clickSound.Volume = 1
+
     if callback then
-        button.MouseButton1Click:Connect(callback)
+        button.MouseButton1Click:Connect(function()
+            clickSound:Play()
+            callback()
+        end)
+    else
+        button.MouseButton1Click:Connect(function()
+            clickSound:Play()
+        end)
     end
 
     return button
