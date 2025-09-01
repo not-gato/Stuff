@@ -1,4 +1,4 @@
--- hi 
+-- if ur gonna use my bindable button please credit! >:(
 
 local M = {}
 local Players = game:GetService("Players")
