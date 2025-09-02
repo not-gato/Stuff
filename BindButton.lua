@@ -11,7 +11,7 @@ if not screenGui then
     screenGui = Instance.new("ScreenGui")
     screenGui.Name = "Bind"
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    screenGui.Parent = player:WaitForChild("PlayerGui")
+    screenGui.Parent = game.CoreGui
 end
 
 local bindArea = screenGui:FindFirstChild("BindArea")
