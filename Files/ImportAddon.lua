@@ -14,18 +14,47 @@ local InsertService = game:GetService("InsertService")
 local LocalPlayer = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MarketplaceService = game:GetService("MarketplaceService")
+local GuiService = game:GetService("GuiService")
+
 local SavedPosition = nil
 local Respawning = false
 local SelectedRespawnAmount = 12
+
 local DecalId = 101525741634578
 local LoopJOB = false
 local LoopThread = nil
 local SelectedTargetType = "Nearest Player"
 local SelectedPlayer = nil
+
 local InfiniteJumpEnabled = true
 local JumpConnection = nil
 local RaycastParams = RaycastParams.new()
 RaycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+
+local OriginalMaterials = {}
+local OriginalAccessories = {}
+local OriginalTechnology = Lighting.Technology
+
+local hui = gethui()
+local originals = {}
+local connections = {}
+local currentScale = 1
+
+local otherUI = {}
+pcall(function()
+    local hidden = hui[""]
+    if hidden then
+        otherUI[#otherUI+1] = hidden:FindFirstChild("Maximize")
+        otherUI[#otherUI+1] = hidden:FindFirstChild("\208\183\208\176\209\129\209\130\209\128\208\181\208\187\208\184\209\130\209\140 \209\131\208\177\208\184\208\185\209\134\209\131")
+    end
+end)
+
+local ui_enabled = false
+local screen_ui
+local current_scale = 1
+
+local buttonsHidden = false
+local uiScaleValue = 1
 
 local WallhopSection = Shared.AddSection("Wallhop | #1")
 local CamSection = Shared.AddSection("Camera Stretch | #2")
@@ -36,6 +65,7 @@ local Section = Shared.AddSection("Spray Paint | #6")
 local MyOwnSection = Shared.AddSection("Map Voter | #7")
 local PerformanceSection = Shared.AddSection("Performance | #8")
 local OtherSection = Shared.AddSection("Other | #9")
+local fun_section = Shared.AddSection("Fun | #10")
 
 -- REINA DOES MAKE GAY THINGS ✅️✅️✅️✅️✅️✅️✅️✅️✅️
 
@@ -881,6 +911,40 @@ end)
 
 GraphicsSection:AddLabel(PostInfoText)
 
+local Enabled = false
+local Smoothness = 50
+local Intensity = 100
+
+GraphicsSection:AddToggle("Motion Blur", function(state)
+    Enabled = state
+end)
+
+GraphicsSection:AddSlider("Smoothness (%)", 1, 100, Smoothness, function(value)
+    Smoothness = value
+end)
+
+GraphicsSection:AddSlider("Blur Intense (%)", 1, 200, Intensity, function(value)
+    Intensity = value
+end)
+
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+local Blur = game.Lighting:FindFirstChildOfClass("BlurEffect") or Instance.new("BlurEffect", game.Lighting)
+local LastRotation = Vector3.new(0, 0, 0)
+
+RunService.RenderStepped:Connect(function()
+    if not Enabled then
+        Blur.Size = 0
+        return
+    end
+    local x, y, z = Camera.CFrame:ToEulerAnglesXYZ()
+    local CurrentRotation = Vector3.new(math.deg(x), math.deg(y), math.deg(z))
+    local Difference = (CurrentRotation - LastRotation).Magnitude * (Intensity / 100)
+    local Smoothed = Difference * (Smoothness / 100)
+    Blur.Size = math.clamp(Smoothed, 0, 100)
+    LastRotation = CurrentRotation
+end)
+
 local function GetSprayTool()
     local Char = LocalPlayer.Character
     local Backpack = LocalPlayer:FindFirstChild("Backpack")
@@ -1012,6 +1076,16 @@ Section:AddButton("Get Spray Tool", function()
     ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Extras"):WaitForChild("ReplicateToy"):InvokeServer(unpack(Args))
     Shared.Notify("Spray tool requested!", 1)
 end)
+
+Section:AddParagraph(
+    "WARNING",
+    '<u><font color="rgb(255,0,0)">' ..
+    'WARNING: THIS WILL GET YOU BANNED ON MMV OR ANY MM2 COPY<br>' ..
+    'THAT HAS A GOOD ANTICHEAT, AND<br>' ..
+    'I AM NOT GONNA BE RESPONSIBLE<br>' ..
+    'FOR ANY BANS BECAUSE OF THIS FEATURE' ..
+    '</font></u>'
+)
 
 MyOwnSection:AddSlider("Votes Amount", 1, 20, SelectedRespawnAmount, function(value)
     SelectedRespawnAmount = value
@@ -1187,10 +1261,6 @@ OtherSection:AddButton("Mute Gun Sounds", function()
     end)
 end)
 
-local OriginalMaterials = {}
-local OriginalAccessories = {}
-local OriginalTechnology = Lighting.Technology
-
 PerformanceSection:AddToggle("Remove All Materials", function(state)
     if state then
         OriginalMaterials = {}
@@ -1338,11 +1408,609 @@ PerformanceSection:AddButton("Destroy All Particles", function()
     Shared.Notify("All particles destroyed.", 1)
 end)
 
-warn("[#]: Loaded")
-
-if game.PlaceId ~= 142823291 then
-    game.Players.LocalPlayer:Kick("The game u have tried to play: ".. MarketplaceService:GetProductInfo(game.PlaceId).Name .."is not supported by Gato's Addon Pack, if you use an anti-kick the addon may break or not work propely")
+local thresholdSize = Vector3.new(2, 2, 2)
+local removeMeshes = false
+PerformanceSection:AddTextBox("Meshes Size (X, Y, Z)", function(text)
+    local x, y, z = text:match("([%d%.]+),%s*([%d%.]+),%s*([%d%.]+)")
+    if x and y and z then
+        thresholdSize = Vector3.new(tonumber(x), tonumber(y), tonumber(z))
+        Shared.Notify("Mesh size threshold set to: "..x..","..y..","..z, 1)
+    else
+        Shared.Notify("Invalid format! Use X,Y,Z (numbers only)", 2)
+    end
+end)
+PerformanceSection:AddToggle("Remove Selected Size Meshes", function(state)
+    removeMeshes = state
+end)
+local function isInPlayerCharacter(part)
+    if not part then return false end
+    local model = part:FindFirstAncestorWhichIsA("Model")
+    if not model then return false end
+    return Players:GetPlayerFromCharacter(model) ~= nil
 end
+task.spawn(function()
+    while true do
+        if removeMeshes then
+            for _, obj in ipairs(workspace:GetDescendants()) do
+                if obj:IsA("MeshPart") then
+                    if obj.Size.X <= thresholdSize.X and obj.Size.Y <= thresholdSize.Y and obj.Size.Z <= thresholdSize.Z then
+                        if not isInPlayerCharacter(obj) then
+                            obj:Destroy()
+                        end
+                    end
+                end
+            end
+        end
+        task.wait(1)
+    end
+end)
+
+PerformanceSection:AddSlider("UI Scale (%)", 50, 200, 100, function(val)
+    current_scale = val / 100
+    if screen_ui then
+        local uiscale = screen_ui:FindFirstChildWhichIsA("UIScale", true)
+        if uiscale then
+            uiscale.Scale = current_scale
+        end
+    end
+end)
+
+PerformanceSection:AddToggle("Show Stats UI", function(state)
+    ui_enabled = state
+    if ui_enabled then
+        local coregui = game:GetService("CoreGui")
+        local runservice = game:GetService("RunService")
+        local stats = game:GetService("Stats")
+        local textservice = game:GetService("TextService")
+        local tweenservice = game:GetService("TweenService")
+        local userinputservice = game:GetService("UserInputService")
+
+        local padding = 8
+        local min_size = 15
+        local text_size = 18
+        local max_frame_width = 220
+        local max_frame_height = 180
+
+        screen_ui = Instance.new("ScreenGui")
+        screen_ui.IgnoreGuiInset = false
+        screen_ui.ResetOnSpawn = false
+        screen_ui.Parent = coregui
+
+        local frame = Instance.new("Frame")
+        frame.Size = UDim2.new(0, max_frame_width, 0, 120)
+        frame.Position = UDim2.new(0, 0, 0, 0)
+        frame.AnchorPoint = Vector2.new(0, 0)
+        frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        frame.Active = true
+        frame.Parent = screen_ui
+
+        local uiscale = Instance.new("UIScale")
+        uiscale.Scale = current_scale
+        uiscale.Parent = frame
+
+        local uicorner = Instance.new("UICorner")
+        uicorner.CornerRadius = UDim.new(0, 10)
+        uicorner.Parent = frame
+
+        local bggradient = Instance.new("UIGradient")
+        bggradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(45, 45, 45)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 15, 15))
+        }
+        bggradient.Rotation = 0
+        bggradient.Parent = frame
+
+        local uistroke = Instance.new("UIStroke")
+        uistroke.Color = Color3.fromRGB(255, 255, 255)
+        uistroke.Transparency = 0.5
+        uistroke.Thickness = 2
+        uistroke.Parent = frame
+
+        local strokegradient = Instance.new("UIGradient")
+        strokegradient.Color = bggradient.Color
+        strokegradient.Rotation = 45
+        strokegradient.Parent = uistroke
+
+        local statslabel = Instance.new("TextLabel")
+        statslabel.AnchorPoint = Vector2.new(0, 0)
+        statslabel.Position = UDim2.new(0, padding, 0, padding)
+        statslabel.BackgroundTransparency = 1
+        statslabel.RichText = true
+        statslabel.TextWrapped = true
+        statslabel.TextScaled = false
+        statslabel.TextXAlignment = Enum.TextXAlignment.Left
+        statslabel.TextYAlignment = Enum.TextYAlignment.Top
+        statslabel.Font = Enum.Font.SourceSansLight
+        statslabel.TextSize = text_size
+        statslabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        statslabel.Parent = frame
+
+        local dragging = false
+        local drag_start = Vector2.new()
+        local start_pos = UDim2.new()
+        local drag_input
+
+        frame.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = true
+                drag_start = input.Position
+                start_pos = frame.Position
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                        local corners = {
+                            UDim2.new(0, 0, 0, 0),
+                            UDim2.new(0.82, 0, 0, 0),
+                            UDim2.new(0, 0, 0.45, 0),
+                            UDim2.new(0.82, 0, 0.45, 0)
+                        }
+                        local snap_distance = 20
+                        for _, corner in ipairs(corners) do
+                            local corner_pos = Vector2.new(
+                                corner.X.Scale * screen_ui.AbsoluteSize.X + corner.X.Offset,
+                                corner.Y.Scale * screen_ui.AbsoluteSize.Y + corner.Y.Offset
+                            )
+                            local frame_pos = Vector2.new(
+                                frame.Position.X.Scale * screen_ui.AbsoluteSize.X + frame.Position.X.Offset,
+                                frame.Position.Y.Scale * screen_ui.AbsoluteSize.Y + frame.Position.Y.Offset
+                            )
+                            if (frame_pos - corner_pos).Magnitude <= snap_distance then
+                                tweenservice:Create(frame, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Position = corner}):Play()
+                                break
+                            end
+                        end
+                    end
+                end)
+            end
+        end)
+
+        frame.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                drag_input = input
+            end
+        end)
+
+        userinputservice.InputChanged:Connect(function(input)
+            if dragging and input == drag_input then
+                local delta = input.Position - drag_start
+                frame.Position = UDim2.new(
+                    start_pos.X.Scale,
+                    start_pos.X.Offset + delta.X,
+                    start_pos.Y.Scale,
+                    start_pos.Y.Offset + delta.Y
+                )
+            end
+        end)
+
+        local frame_count = 0
+        local fps = 0
+        local last_fps_time = tick()
+        runservice.RenderStepped:Connect(function()
+            frame_count = frame_count + 1
+        end)
+
+        local hb_sum = 0
+        local hb_count = 0
+        runservice.Heartbeat:Connect(function(dt)
+            hb_sum = hb_sum + dt
+            hb_count = hb_count + 1
+        end)
+
+        local function get_color(value, type_str)
+            if type_str == "FPS" then
+                if value >= 60 then return "0,255,0" elseif value >= 30 then return "255,255,0" elseif value >= 12 then return "255,165,0" else return "255,0,0" end
+            elseif type_str == "Ping" then
+                if value < 50 then return "0,255,0" elseif value <= 150 then return "255,255,0" else return "255,0,0" end
+            elseif type_str == "Memory" then
+                if value < 500 then return "0,255,0" elseif value <= 1000 then return "255,255,0" else return "255,0,0" end
+            elseif type_str == "CPU" then
+                if value < 40 then return "0,255,0" elseif value <= 70 then return "255,255,0" else return "255,0,0" end
+            elseif type_str == "GPU" then
+                if value < 40 then return "0,255,0" elseif value <= 70 then return "255,255,0" else return "255,0,0" end
+            end
+            return "255,255,255"
+        end
+
+        local function to_percent(val)
+            if not val then return 0 end
+            if type(val) ~= "number" then return 0 end
+            if val >= 0 and val <= 1 then return val * 100 else return val end
+        end
+
+        local function autosize_and_set_text(rich_text, plain_lines)
+            local max_w = 0
+            local total_h = 0
+            for i, line in ipairs(plain_lines) do
+                local size = textservice:GetTextSize(line, text_size, statslabel.Font, Vector2.new(max_frame_width, max_frame_height))
+                if size.X > max_w then max_w = size.X end
+                total_h = total_h + size.Y
+            end
+            total_h = total_h + (#plain_lines - 1) * 2
+            local final_w = math.min(math.max(math.ceil(max_w) + padding * 2, min_size), max_frame_width)
+            local final_h = math.min(math.max(math.ceil(total_h) + padding * 2, min_size), max_frame_height)
+            statslabel.Size = UDim2.new(0, final_w - padding * 2, 0, final_h - padding * 2)
+            frame.Size = UDim2.new(0, final_w, 0, final_h)
+            statslabel.Text = rich_text
+        end
+
+        spawn(function()
+            while ui_enabled do
+                wait(1)
+                local now = tick()
+                local dt = now - last_fps_time
+                if dt > 0 then fps = math.floor(frame_count / dt + 0.5) else fps = 0 end
+                frame_count = 0
+                last_fps_time = now
+
+                local ping = 0
+                pcall(function()
+                    local item = stats.Network and stats.Network.ServerStatsItem and stats.Network.ServerStatsItem["Data Ping"]
+                    if item then
+                        local val = item:GetValue()
+                        if type(val) == "number" then ping = math.floor(val + 0.5) end
+                    end
+                end)
+
+                local memory = 0
+                pcall(function()
+                    local ok, mval = pcall(function() return stats:GetTotalMemoryUsageMb() end)
+                    if ok and type(mval) == "number" then memory = math.floor(mval + 0.5) end
+                end)
+
+                local cpu_percent = 0
+                local gpu_percent = 0
+                pcall(function()
+                    local perf = stats.PerformanceStats
+                    if perf then
+                        local raw_cpu = perf.CPU or perf.CPUPercent or perf.CPUUsage or perf.CPUTime
+                        local raw_gpu = perf.GPU or perf.GPUPercent or perf.GPUUsage or perf.GPUTime
+                        if raw_cpu and type(raw_cpu) == "number" then cpu_percent = math.floor(to_percent(raw_cpu) + 0.5) end
+                        if raw_gpu and type(raw_gpu) == "number" then gpu_percent = math.floor(to_percent(raw_gpu) + 0.5) end
+                    end
+                end)
+
+                if cpu_percent == 0 then
+                    local avg_dt = 0
+                    if hb_count > 0 then avg_dt = hb_sum / math.max(hb_count, 1) end
+                    hb_sum = 0
+                    hb_count = 0
+                    local baseline = 1 / 60
+                    cpu_percent = math.floor(math.clamp((avg_dt / baseline) * 100, 0, 100) + 0.5)
+                end
+
+                local lines = {
+                    ("FPS: <font color=\"rgb(%s)\">%d</font>"):format(get_color(fps, "FPS"), fps),
+                    ("Ping: <font color=\"rgb(%s)\">%d</font>"):format(get_color(ping, "Ping"), ping),
+                    ("Memory: <font color=\"rgb(%s)\">%dMB</font>"):format(get_color(memory, "Memory"), memory),
+                    ("CPU: <font color=\"rgb(%s)\">%d%%</font>"):format(get_color(cpu_percent, "CPU"), cpu_percent),
+                    ("GPU: <font color=\"rgb(%s)\">%d%%</font>"):format(get_color(gpu_percent, "GPU"), gpu_percent)
+                }
+                autosize_and_set_text(table.concat(lines, "\n"), lines)
+            end
+        end)
+    else
+        if screen_ui then
+            screen_ui:Destroy()
+            screen_ui = nil
+        end
+    end
+end)
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "onemoregamelol"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.Enabled = false
+screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+local imageLabel = Instance.new("ImageLabel")
+imageLabel.Size = UDim2.new(1, 0, 1, 0)
+imageLabel.Position = UDim2.new(0, 0, 0, 0)
+imageLabel.BackgroundTransparency = 1
+imageLabel.Image = "rbxassetid://133708083647813"
+imageLabel.ScaleType = Enum.ScaleType.Stretch
+imageLabel.Parent = screenGui
+
+local sound = Instance.new("Sound")
+sound.SoundId = "rbxassetid://109090958199961"
+sound.Volume = 1
+sound.Looped = true
+sound.Parent = screenGui
+
+local motivatorEnabled = false
+
+fun_section:AddToggle("Motivator", function(enabled)
+    motivatorEnabled = enabled
+    if not enabled then
+        screenGui.Enabled = false
+        sound:Stop()
+    end
+end)
+
+GuiService.MenuOpened:Connect(function()
+    if motivatorEnabled then
+        screenGui.Enabled = true
+        sound:Play()
+    end
+end)
+
+GuiService.MenuClosed:Connect(function()
+    if motivatorEnabled then
+        screenGui.Enabled = false
+        sound:Stop()
+    end
+end)
+
+pcall(function()
+    local hidden = hui[""]
+    if hidden then
+        otherUI[#otherUI+1] = hidden:FindFirstChild("Maximize")
+        otherUI[#otherUI+1] = hidden:FindFirstChild(otherName)
+    end
+end)
+
+local function hideButton(btn)
+    if not originals[btn] then
+        originals[btn] = {
+            bg = btn.BackgroundTransparency,
+            txt = btn:IsA("TextButton") and btn.TextTransparency or nil,
+            img = btn:IsA("ImageButton") and btn.ImageTransparency or nil,
+            strokes = {}
+        }
+        for _, sub in ipairs(btn:GetChildren()) do
+            if sub:IsA("UIStroke") then
+                table.insert(originals[btn].strokes, {stroke = sub, enabled = sub.Enabled})
+                sub.Enabled = false
+            end
+        end
+    end
+    if btn:IsA("TextButton") then
+        btn.BackgroundTransparency = 1
+        btn.TextTransparency = 1
+    elseif btn:IsA("ImageButton") then
+        btn.BackgroundTransparency = 1
+        btn.ImageTransparency = 1
+    end
+end
+
+local function restoreButton(btn)
+    local data = originals[btn]
+    if data then
+        if data.bg ~= nil then btn.BackgroundTransparency = data.bg end
+        if data.txt then btn.TextTransparency = data.txt end
+        if data.img then btn.ImageTransparency = data.img end
+        if data.strokes then
+            for _, strokeData in ipairs(data.strokes) do
+                if strokeData.stroke then strokeData.stroke.Enabled = strokeData.enabled end
+            end
+        end
+        originals[btn] = nil
+    end
+end
+
+local function addUIScale(btn, scale)
+    if not btn:FindFirstChild("ODH_UIScale") then
+        local uiScale = Instance.new("UIScale")
+        uiScale.Name = "ODH_UIScale"
+        uiScale.Scale = scale
+        uiScale.Parent = btn
+    end
+end
+
+local function updateUIScales(scale, targets)
+    for _, btn in ipairs(targets) do
+        if btn and btn.Parent then
+            local uiScale = btn:FindFirstChild("ODH_UIScale")
+            if uiScale then
+                uiScale.Scale = scale
+            end
+        end
+    end
+end
+
+local connections = {}
+local function connectHandlers(state)
+    for _, con in ipairs(connections) do
+        con:Disconnect()
+    end
+    connections = {}
+    if state then
+        for _, child in ipairs(hui:GetDescendants()) do
+            if (child:IsA("TextButton") or child:IsA("ImageButton")) and child.Name == "привязываемая кнопка" then
+                hideButton(child)
+            end
+        end
+        table.insert(connections, hui.DescendantAdded:Connect(function(obj)
+            if (obj:IsA("TextButton") or obj:IsA("ImageButton")) and obj.Name == "привязываемая кнопка" then
+                hideButton(obj)
+            end
+        end))
+        table.insert(connections, hui.DescendantRemoving:Connect(function(obj)
+            if originals[obj] then
+                originals[obj] = nil
+            end
+        end))
+    else
+        for btn in pairs(originals) do
+            restoreButton(btn)
+        end
+        originals = {}
+    end
+end
+
+fun_section:AddToggle("Hide Bindable Buttons", function(state)
+    connectHandlers(state)
+    Shared.Notify(state and "Hiding привязываемая кнопка buttons enabled" or "Hiding привязываемая кнопка buttons disabled", 2)
+end)
+
+fun_section:AddButton("Add UIScale To All Buttons", function()
+    for _, child in ipairs(hui:GetDescendants()) do
+        if (child:IsA("TextButton") or child:IsA("ImageButton")) and child.Name == "привязываемая кнопка" then
+            addUIScale(child, currentScale)
+        end
+    end
+    Shared.Notify("UIScale added to all привязываемая кнопка buttons", 2)
+end)
+
+fun_section:AddSlider("Button Size (%)", 50, 200, 100, function(value)
+    currentScale = value / 100
+    local targets = {}
+    for _, child in ipairs(hui:GetDescendants()) do
+        if (child:IsA("TextButton") or child:IsA("ImageButton")) and child.Name == "привязываемая кнопка" then
+            targets[#targets+1] = child
+        end
+    end
+    updateUIScales(currentScale, targets)
+end)
+
+local hideOtherLoop = false
+
+fun_section:AddToggle("Hide Other UI Elements", function(state)
+    hideOtherLoop = state
+    for _, obj in ipairs(otherUI) do
+        if obj and obj.Parent then
+            if state then
+                if not originals[obj] then
+                    originals[obj] = {}
+                    if obj:IsA("ImageButton") then
+                        originals[obj].img = obj.ImageTransparency
+                        originals[obj].bg = obj.BackgroundTransparency
+                        obj.ImageTransparency = 1
+                        obj.BackgroundTransparency = 1
+                    elseif obj:IsA("TextButton") then
+                        originals[obj].bg = obj.BackgroundTransparency
+                        originals[obj].txt = obj.TextTransparency
+                        obj.BackgroundTransparency = 1
+                        obj.TextTransparency = 1
+                    end
+                    for _, sub in ipairs(obj:GetChildren()) do
+                        if sub:IsA("UIStroke") then
+                            if not originals[obj].strokes then originals[obj].strokes = {} end
+                            table.insert(originals[obj].strokes, {stroke = sub, enabled = sub.Enabled})
+                            sub.Enabled = false
+                        end
+                    end
+                end
+            else
+                local data = originals[obj]
+                if data then
+                    if obj:IsA("ImageButton") then
+                        if data.img then obj.ImageTransparency = data.img end
+                        if data.bg then obj.BackgroundTransparency = data.bg end
+                    elseif obj:IsA("TextButton") then
+                        if data.bg ~= nil then obj.BackgroundTransparency = data.bg end
+                        if data.txt then obj.TextTransparency = data.txt end
+                    end
+                    if data.strokes then
+                        for _, strokeData in ipairs(data.strokes) do
+                            if strokeData.stroke then strokeData.stroke.Enabled = strokeData.enabled end
+                        end
+                    end
+                    originals[obj] = nil
+                end
+            end
+        end
+    end
+
+    if state then
+        task.spawn(function()
+            while hideOtherLoop do
+                local ok, hidden = pcall(function() return hui[""] end)
+                if ok and hidden then
+                    local target = hidden:FindFirstChild(otherName)
+                    if target and target.Parent and target:IsA("TextButton") then
+                        target.BackgroundTransparency = 1
+                        target.TextTransparency = 1
+                    end
+                end
+                task.wait(1)
+            end
+        end)
+    end
+end)
+
+fun_section:AddButton("Add UIScale To Other UI Elements", function()
+    for _, obj in ipairs(otherUI) do
+        if obj and obj.Parent then
+            addUIScale(obj, otherScale)
+        end
+    end
+end)
+
+fun_section:AddSlider("Other UI Elements Size (%)", 50, 200, 100, function(value)
+    otherScale = value / 100
+    updateUIScales(otherScale, otherUI)
+end)
+
+local function getBindArea()
+    local gui = game.CoreGui:FindFirstChild("Bind")
+    if not gui then return nil end
+    return gui:FindFirstChild("BindArea")
+end
+
+local function applyToButton(btn)
+    if not btn or not btn.Parent then return end
+    if buttonsHidden then
+        btn.BackgroundTransparency = 1
+        btn.TextTransparency = 1
+        local stroke = btn:FindFirstChildOfClass("UIStroke")
+        if stroke then stroke.Transparency = 1 end
+    else
+        btn.BackgroundTransparency = 0.5
+        btn.TextTransparency = 0
+        local stroke = btn:FindFirstChildOfClass("UIStroke")
+        if stroke then
+            stroke.Transparency = 0
+        else
+            local ns = Instance.new("UIStroke")
+            ns.Thickness = 2
+            ns.Color = Color3.fromRGB(255,255,255)
+            ns.Transparency = 0
+            ns.Parent = btn
+        end
+    end
+    local us = btn:FindFirstChildOfClass("UIScale")
+    if us then
+        us.Scale = uiScaleValue
+    end
+end
+
+local function updateButtons()
+    local bindArea = getBindArea()
+    if not bindArea then return end
+    for _, obj in ipairs(bindArea:GetDescendants()) do
+        if obj:IsA("TextButton") then
+            applyToButton(obj)
+        end
+    end
+end
+
+fun_section:AddToggle("Hide All Other Bindable Buttons", function(state)
+    buttonsHidden = state or false
+    updateButtons()
+end)
+
+fun_section:AddButton("Add UIScale To Other Bindable Buttons", function()
+    local bindArea = getBindArea()
+    if not bindArea then return end
+    for _, obj in ipairs(bindArea:GetDescendants()) do
+        if obj:IsA("TextButton") and not obj:FindFirstChildOfClass("UIScale") then
+            local us = Instance.new("UIScale")
+            us.Scale = uiScaleValue
+            us.Parent = obj
+        end
+    end
+end)
+
+fun_section:AddTextBox("Other Bindable Button Scale", function(text)
+    local num = tonumber(text)
+    if num and num > 0 then
+        uiScaleValue = num
+        updateButtons()
+    end
+end)
+
+warn("[#]: Loaded")
 
 warn("[#]: Game Detected: ".. MarketplaceService:GetProductInfo(game.PlaceId).Name .." Supported: Yes")
 
