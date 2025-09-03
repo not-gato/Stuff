@@ -276,3 +276,4 @@ return {
     AddFPSBox = addfpsbox,
     RemoveFPSBox = removefpsbox
 }
+end
