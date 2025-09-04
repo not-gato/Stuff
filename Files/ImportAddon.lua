@@ -1079,7 +1079,15 @@ Section:AddButton("Get Spray Tool", function()
     Shared.Notify("Spray tool requested!", 1)
 end)
 
-trail_section:AddLabel("<u><font color="rgb(255,0,0)"> WARNING: THIS WILL GET YOU YOU BANNED ON ANY MMV OR ANY MM2 COPY THAT HAS A GOOD ANTICHEAT!, SO USE ONLY ON MM2.</font></u>")
+Section:AddParagraph(
+    "WARNING",
+    '<u><font color="rgb(255,0,0)">' ..
+    'WARNING: THIS WILL GET YOU BANNED ON MMV OR ANY MM2 COPY<br>' ..
+    'THAT HAS A GOOD ANTICHEAT, AND<br>' ..
+    'I AM NOT GONNA BE RESPONSIBLE<br>' ..
+    'FOR ANY BANS BECAUSE OF THIS FEATURE' ..
+    '</font></u>'
+)
 
 MyOwnSection:AddSlider("Votes Amount", 1, 20, SelectedRespawnAmount, function(value)
     SelectedRespawnAmount = value
