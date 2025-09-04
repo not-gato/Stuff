@@ -1079,8 +1079,7 @@ Section:AddButton("Get Spray Tool", function()
     Shared.Notify("Spray tool requested!", 1)
 end)
 
-Section:AddParagraph(
-    "WARNING",
+Section:AddLabel(
     '<u><font color="rgb(255,0,0)">' ..
     'WARNING: THIS WILL GET YOU BANNED ON MMV OR ANY MM2 COPY<br>' ..
     'THAT HAS A GOOD ANTICHEAT, AND<br>' ..
