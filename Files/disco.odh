@@ -1,8 +1,8 @@
 local Shared = odh_shared_plugins
 local trail_section = Shared.AddSection("Player Trail")
 
-local players = game:GetService("Players")
-local player = players.LocalPlayer
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
 local trail = nil
 local hrp = nil
@@ -10,8 +10,20 @@ local enabled = false
 local selected_color_name = "red"
 local default_color3 = Color3.fromRGB(255, 0, 0)
 
-local custom_colors = { color1 = nil, color2 = nil, color3 = nil }
-local enable_custom = { color1 = false, color2 = false, color3 = false }
+local custom_colors = {
+    color1 = nil,
+    color2 = nil,
+    color3 = nil,
+    color4 = nil,
+    color5 = nil
+}
+local enable_custom = {
+    color1 = false,
+    color2 = false,
+    color3 = false,
+    color4 = false,
+    color5 = false
+}
 trail_section._internal = trail_section._internal or {}
 
 local advanced_props = {
@@ -32,40 +44,41 @@ local function twopointseq(c1, c2)
 end
 
 local colors = {
-    red = twopointseq(Color3.fromRGB(255,0,0)),
-    orange = twopointseq(Color3.fromRGB(255,165,0)),
-    yellow = twopointseq(Color3.fromRGB(255,255,0)),
-    green = twopointseq(Color3.fromRGB(0,255,0)),
+    -- solids (as two-point sequences)
+    ["red"] = twopointseq(Color3.fromRGB(255,0,0)),
+    ["orange"] = twopointseq(Color3.fromRGB(255,165,0)),
+    ["yellow"] = twopointseq(Color3.fromRGB(255,255,0)),
+    ["green"] = twopointseq(Color3.fromRGB(0,255,0)),
     ["dark green"] = twopointseq(Color3.fromRGB(0,128,0)),
-    cyan = twopointseq(Color3.fromRGB(0,255,255)),
+    ["cyan"] = twopointseq(Color3.fromRGB(0,255,255)),
     ["light blue"] = twopointseq(Color3.fromRGB(173,216,230)),
-    blue = twopointseq(Color3.fromRGB(0,0,255)),
+    ["blue"] = twopointseq(Color3.fromRGB(0,0,255)),
     ["dark blue"] = twopointseq(Color3.fromRGB(0,0,139)),
-    purple = twopointseq(Color3.fromRGB(128,0,128)),
-    pink = twopointseq(Color3.fromRGB(255,192,203)),
+    ["purple"] = twopointseq(Color3.fromRGB(128,0,128)),
+    ["pink"] = twopointseq(Color3.fromRGB(255,192,203)),
 
+    -- gradients (two-point)
     ["red, orange"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0,Color3.fromRGB(255,0,0)),
-        ColorSequenceKeypoint.new(1,Color3.fromRGB(255,165,0))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255,0,0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255,165,0))
     }),
     ["yellow, green"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0,Color3.fromRGB(255,255,0)),
-        ColorSequenceKeypoint.new(1,Color3.fromRGB(0,255,0))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255,255,0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0,255,0))
     }),
     ["cyan, light blue"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0,Color3.fromRGB(0,255,255)),
-        ColorSequenceKeypoint.new(1,Color3.fromRGB(173,216,230))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0,255,255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(173,216,230))
     }),
     ["blue, dark blue"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0,Color3.fromRGB(0,0,255)),
-        ColorSequenceKeypoint.new(1,Color3.fromRGB(0,0,139))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,139))
     }),
     ["purple, pink"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0,Color3.fromRGB(128,0,128)),
-        ColorSequenceKeypoint.new(1,Color3.fromRGB(255,192,203))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(128,0,128)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255,192,203))
     }),
-
-    rainbow = ColorSequence.new({
+    ["rainbow"] = ColorSequence.new({
         ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255,0,0)),
         ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255,165,0)),
         ColorSequenceKeypoint.new(0.34, Color3.fromRGB(255,255,0)),
@@ -75,197 +88,250 @@ local colors = {
         ColorSequenceKeypoint.new(1.00, Color3.fromRGB(128,0,128))
     }),
 
-    black = twopointseq(Color3.fromRGB(0,0,0)),
+    -- new grayscale solids
+    ["black"] = twopointseq(Color3.fromRGB(0,0,0)),
     ["dark gray"] = twopointseq(Color3.fromRGB(64,64,64)),
     ["light gray"] = twopointseq(Color3.fromRGB(192,192,192)),
-    white = twopointseq(Color3.fromRGB(255,255,255)),
+    ["white"] = twopointseq(Color3.fromRGB(255,255,255)),
 
+    -- grayscale gradients
     ["black, dark gray"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0,Color3.fromRGB(0,0,0)),
-        ColorSequenceKeypoint.new(1,Color3.fromRGB(64,64,64))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(64,64,64))
     }),
     ["light gray, white"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0,Color3.fromRGB(192,192,192)),
-        ColorSequenceKeypoint.new(1,Color3.fromRGB(255,255,255))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(192,192,192)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255,255,255))
     }),
     ["black, white"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0,Color3.fromRGB(0,0,0)),
-        ColorSequenceKeypoint.new(1,Color3.fromRGB(255,255,255))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255,255,255))
     }),
     ["dark gray, light gray"] = ColorSequence.new({
-        ColorSequenceKeypoint.new(0,Color3.fromRGB(64,64,64)),
-        ColorSequenceKeypoint.new(1,Color3.fromRGB(192,192,192))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(64,64,64)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(192,192,192))
     })
 }
 
 local dropdown_options = {
-    'red','orange','yellow','green','dark green','cyan','light blue','blue','dark blue','purple','pink',
-    'red, orange','yellow, green','cyan, light blue','blue, dark blue','purple, pink','rainbow',
-    'black','dark gray','light gray','white',
-    'black, dark gray','light gray, white','black, white','dark gray, light gray'
+    "red","orange","yellow","green","dark green","cyan","light blue","blue","dark blue","purple","pink",
+    "red, orange","yellow, green","cyan, light blue","blue, dark blue","purple, pink","rainbow",
+    "black","dark gray","light gray","white",
+    "black, dark gray","light gray, white","black, white","dark gray, light gray"
 }
 
 local function ensureattachments(part)
-    if not part or not part:IsA("BasePart") then
+    if not part then return nil, nil end
+    if not part:IsA("BasePart") then
         if part:IsA("Model") then
             part = part:FindFirstChild("HumanoidRootPart") or part:FindFirstChildWhichIsA("BasePart")
         end
         if not part then return nil, nil end
     end
-    local a0 = part:FindFirstChild("TrailAttachment0") or Instance.new("Attachment")
-    a0.Name = "TrailAttachment0"
-    a0.Position = Vector3.new(0,1,0)
-    a0.Parent = part
-
-    local a1 = part:FindFirstChild("TrailAttachment1") or Instance.new("Attachment")
-    a1.Name = "TrailAttachment1"
-    a1.Position = Vector3.new(0,-1,0)
-    a1.Parent = part
-
-    return a0,a1
+    local a0 = part:FindFirstChild("TrailAttachment0")
+    if not a0 then
+        a0 = Instance.new("Attachment")
+        a0.Name = "TrailAttachment0"
+        a0.Position = Vector3.new(0, 1, 0)
+        a0.Parent = part
+    else
+        pcall(function() a0.Position = Vector3.new(0, 1, 0) end)
+    end
+    local a1 = part:FindFirstChild("TrailAttachment1")
+    if not a1 then
+        a1 = Instance.new("Attachment")
+        a1.Name = "TrailAttachment1"
+        a1.Position = Vector3.new(0, -1, 0)
+        a1.Parent = part
+    else
+        pcall(function() a1.Position = Vector3.new(0, -1, 0) end)
+    end
+    return a0, a1
 end
 
 local function destroytrail()
-    if trail then pcall(function() trail:Destroy() end) end
+    if trail then
+        pcall(function() trail:Destroy() end)
+    end
     trail = nil
 end
 
 local function createtrail(customcolorsequence)
     if not hrp then return end
     destroytrail()
-    local a0,a1 = ensureattachments(hrp)
+    local a0, a1 = ensureattachments(hrp)
     if not a0 or not a1 then return end
     local t = Instance.new("Trail")
-    t.Attachment0, t.Attachment1 = a0, a1
-    t.Lifetime = advanced_props.lifetime or 1
-    t.Transparency = NumberSequence.new(0,1)
-    t.Color = customcolorsequence or colors[selected_color_name] or twopointseq(default_color3)
-    t.FaceCamera = advanced_props.facecamera or false
-    t.WidthScale = NumberSequence.new(advanced_props.widthscale or 1)
-    t.Brightness = advanced_props.brightness or 1
-    if advanced_props.minlength then t.MinLength = advanced_props.minlength end
-    if advanced_props.maxlength then t.MaxLength = advanced_props.maxlength end
-    t.Parent = hrp
+    pcall(function()
+        t.Attachment0 = a0
+        t.Attachment1 = a1
+    end)
+    pcall(function() t.Lifetime = advanced_props.lifetime or 1 end)
+    pcall(function() t.Transparency = NumberSequence.new(0, 1) end)
+    local cs = customcolorsequence or colors[selected_color_name] or twopointseq(default_color3)
+    pcall(function() t.Color = cs end)
+    pcall(function() t.FaceCamera = advanced_props.facecamera and true or false end)
+    pcall(function() t.WidthScale = NumberSequence.new(advanced_props.widthscale or 1) end)
+    pcall(function() t.Brightness = advanced_props.brightness or 1 end)
+    if advanced_props.minlength then pcall(function() t.MinLength = advanced_props.minlength end) end
+    if advanced_props.maxlength then pcall(function() t.MaxLength = advanced_props.maxlength end) end
+    pcall(function() t.Parent = hrp end)
     trail = t
 end
 
 local function buildcustomcolorsequence()
     local enabled_list = {}
-    if enable_custom.color1 and custom_colors.color1 then table.insert(enabled_list,{color=custom_colors.color1,pos=0}) end
-    if enable_custom.color2 and custom_colors.color2 then table.insert(enabled_list,{color=custom_colors.color2,pos=0.5}) end
-    if enable_custom.color3 and custom_colors.color3 then table.insert(enabled_list,{color=custom_colors.color3,pos=1}) end
-    if #enabled_list==0 then return colors[selected_color_name] or twopointseq(default_color3) end
+    if enable_custom.color1 and custom_colors.color1 then table.insert(enabled_list, { color = custom_colors.color1 }) end
+    if enable_custom.color2 and custom_colors.color2 then table.insert(enabled_list, { color = custom_colors.color2 }) end
+    if enable_custom.color3 and custom_colors.color3 then table.insert(enabled_list, { color = custom_colors.color3 }) end
+    if enable_custom.color4 and custom_colors.color4 then table.insert(enabled_list, { color = custom_colors.color4 }) end
+    if enable_custom.color5 and custom_colors.color5 then table.insert(enabled_list, { color = custom_colors.color5 }) end
+
+    if #enabled_list == 0 then
+        return colors[selected_color_name] or twopointseq(default_color3)
+    end
+
     local seq = {}
-    if #enabled_list==1 then
-        local c=enabled_list[1].color
-        table.insert(seq,ColorSequenceKeypoint.new(0,c))
-        table.insert(seq,ColorSequenceKeypoint.new(1,c))
+    if #enabled_list == 1 then
+        local c = enabled_list[1].color
+        table.insert(seq, ColorSequenceKeypoint.new(0, c))
+        table.insert(seq, ColorSequenceKeypoint.new(1, c))
     else
-        for _,entry in ipairs(enabled_list) do
-            table.insert(seq,ColorSequenceKeypoint.new(entry.pos,entry.color))
+        local n = #enabled_list
+        for i, entry in ipairs(enabled_list) do
+            local pos = 0
+            if n > 1 then pos = (i - 1) / (n - 1) end
+            table.insert(seq, ColorSequenceKeypoint.new(pos, entry.color))
         end
     end
+
     return ColorSequence.new(seq)
 end
 
 local function applycustomcolors()
     local cs = buildcustomcolorsequence()
-    if trail then trail.Color = cs else createtrail(cs) end
+    if trail then
+        pcall(function() trail.Color = cs end)
+    else
+        createtrail(cs)
+    end
 end
 
 local function parsegradientstring(text)
-    if type(text)~="string" then return nil end
-    local parts={}
-    for seg in text:gmatch("[^;]+") do
-        local r,g,b = seg:match("(%d+),(%d+),(%d+)")
+    if type(text) ~= "string" then return nil end
+    local parts = {}
+    for seg in string.gmatch(text, "[^;]+") do
+        local r, g, b = seg:match("(%d+),(%d+),(%d+)")
         if r and g and b then
-            table.insert(parts,Color3.fromRGB(tonumber(r),tonumber(g),tonumber(b)))
+            local rn, gn, bn = tonumber(r), tonumber(g), tonumber(b)
+            if rn and gn and bn then
+                rn = math.clamp(rn, 0, 255)
+                gn = math.clamp(gn, 0, 255)
+                bn = math.clamp(bn, 0, 255)
+                table.insert(parts, Color3.fromRGB(rn, gn, bn))
+            end
         end
     end
-    if #parts<2 then return nil end
-    local seq={}
-    for i,color in ipairs(parts) do
-        table.insert(seq,ColorSequenceKeypoint.new((i-1)/(#parts-1),color))
+    if #parts < 2 then return nil end
+    local seq = {}
+    local denom = (#parts - 1)
+    if denom < 1 then denom = 1 end
+    for i, color in ipairs(parts) do
+        local pos = (i - 1) / denom
+        table.insert(seq, ColorSequenceKeypoint.new(pos, color))
     end
     return ColorSequence.new(seq)
 end
 
 local function applycustomgradient(text)
     local cs = parsegradientstring(text)
-    if cs then
-        if trail then trail.Color = cs else createtrail(cs) end
+    if not cs then return end
+    if trail then
+        pcall(function() trail.Color = cs end)
+    else
+        createtrail(cs)
     end
 end
 
-trail_section:AddDropdown("Predefined Trail", dropdown_options,function(value)
-    if colors[value] then
+trail_section:AddDropdown("Predefined Trail", dropdown_options, function(value)
+    if type(value) == "string" and colors[value] then
         selected_color_name = value
-        if trail then trail.Color = colors[selected_color_name] end
+        if trail then pcall(function() trail.Color = colors[selected_color_name] end) end
     end
 end)
 
-trail_section:AddToggle("Toggle Trail",function(state)
-    enabled = state
+trail_section:AddToggle("Toggle Trail", function(state)
+    enabled = state and true or false
     if enabled then createtrail() else destroytrail() end
 end)
 
 trail_section:AddLabel("<u><font color='rgb(0,255,0)'>Color 1 = Start, Color 2 = Middle, Color 3 = End</font></u>")
 
-for i=1,3 do
-    local label = "color"..i
-    trail_section:AddToggle("Enable "..label,function(state)
-        enable_custom[label] = state
-        if enabled then applycustomcolors() end
+for i = 1, 5 do
+    local key = "color" .. tostring(i)
+    trail_section:AddToggle("Enable " .. key, function(state)
+        enable_custom[key] = state and true or false
+        if enabled then pcall(function() applycustomcolors() end) end
     end)
-    trail_section:AddTextBox(label.." Color (RGB)",function(text)
-        local r,g,b = text:match("(%d+),(%d+),(%d+)")
+    trail_section:AddTextBox(key .. " Color (RGB)", function(text)
+        if type(text) ~= "string" then return end
+        local r, g, b = text:match("(%d+),(%d+),(%d+)")
         if r and g and b then
-            custom_colors[label] = Color3.fromRGB(tonumber(r),tonumber(g),tonumber(b))
-            if enabled then applycustomcolors() end
+            local rn, gn, bn = tonumber(r), tonumber(g), tonumber(b)
+            if rn and gn and bn then
+                rn = math.clamp(rn, 0, 255)
+                gn = math.clamp(gn, 0, 255)
+                bn = math.clamp(bn, 0, 255)
+                custom_colors[key] = Color3.fromRGB(rn, gn, bn)
+                if enabled then pcall(function() applycustomcolors() end) end
+            end
         end
     end)
 end
 
-trail_section:AddButton("Apply Custom Colors",applycustomcolors)
-trail_section:AddTextBox("Custom Gradient",function(text) trail_section._internal.customgradienttext = text end)
-trail_section:AddButton("Apply Custom Gradient",function()
-    if trail_section._internal.customgradienttext then
-        applycustomgradient(trail_section._internal.customgradienttext)
-    end
+trail_section:AddButton("Apply Custom Colors", function() applycustomcolors() end)
+
+trail_section:AddTextBox("Custom Gradient", function(text) trail_section._internal.customgradienttext = text end)
+trail_section:AddButton("Apply Custom Gradient", function()
+    local txt = trail_section._internal.customgradienttext
+    if txt then applycustomgradient(txt) end
 end)
 
 trail_section:AddLabel("<u><font color='rgb(255,0,0)'>Advanced Properties</font></u>")
 
-trail_section:AddSlider("Brightness (0-10)",0,10,1,function(value)
+trail_section:AddSlider("Brightness (0-10)", 0, 10, 1, function(value)
     advanced_props.brightness = value
-    if trail then trail.Brightness = value end
+    if trail then pcall(function() trail.Brightness = value end) end
 end)
 
-trail_section:AddToggle("Face Camera",function(state)
-    advanced_props.facecamera = state
-    if trail then trail.FaceCamera = state end
+trail_section:AddToggle("Face Camera", function(state)
+    advanced_props.facecamera = state and true or false
+    if trail then pcall(function() trail.FaceCamera = advanced_props.facecamera end) end
 end)
 
-trail_section:AddSlider("Life Time (1-20)",1,20,1,function(value)
+trail_section:AddSlider("Life Time (1-20)", 1, 20, 1, function(value)
     advanced_props.lifetime = value
-    if trail then trail.Lifetime = value end
+    if trail then pcall(function() trail.Lifetime = advanced_props.lifetime end) end
 end)
 
-trail_section:AddTextBox("Max Length",function(text)
+trail_section:AddTextBox("Max Length", function(text)
     local n = tonumber(text)
-    if n then advanced_props.maxlength=n; if trail then trail.MaxLength=n end end
+    if n then advanced_props.maxlength = n; if trail then pcall(function() trail.MaxLength = n end) end end
 end)
-trail_section:AddTextBox("Min Length",function(text)
+
+trail_section:AddTextBox("Min Length", function(text)
     local n = tonumber(text)
-    if n then advanced_props.minlength=n; if trail then trail.MinLength=n end end
+    if n then advanced_props.minlength = n; if trail then pcall(function() trail.MinLength = n end) end end
 end)
-trail_section:AddTextBox("Width Scale",function(text)
+
+trail_section:AddTextBox("Width Scale", function(text)
     local n = tonumber(text)
-    if n then advanced_props.widthscale=n; if trail then trail.WidthScale=NumberSequence.new(n) end end
+    if n then advanced_props.widthscale = n; if trail then pcall(function() trail.WidthScale = NumberSequence.new(n) end) end end
 end)
 
 local function oncharacteradded(char)
-    hrp = char:WaitForChild("HumanoidRootPart",5) or char:FindFirstChild("HumanoidRootPart")
+    if not (char and char:IsA("Model")) then return end
+    hrp = char:WaitForChild("HumanoidRootPart", 5) or char:FindFirstChild("HumanoidRootPart")
     if hrp and enabled then createtrail() end
 end
 
