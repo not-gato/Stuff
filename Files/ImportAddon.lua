@@ -69,6 +69,16 @@ local PerformanceSection = Shared.AddSection("Performance | #8")
 local OtherSection = Shared.AddSection("Other | #9")
 local fun_section = Shared.AddSection("Fun | #10")
 
+local trail = nil
+local hrp = nil
+local enabled = false
+local selected_color_name = "Red"
+local default_color3 = Color3.fromRGB(255, 0, 0)
+local custom_colors = {color1 = nil, color2 = nil, color3 = nil, color4 = nil, color5 = nil}
+local enable_custom = {color1 = false, color2 = false, color3 = false, color4 = false, color5 = false}
+fun_section._internal = fun_section._internal or {}
+local advanced_props = {brightness = 1, facecamera = false, lifetime = 1, maxlength = nil, minlength = nil, widthscale = 1}
+
 -- REINA DOES MAKE GAY THINGS ✅️✅️✅️✅️✅️✅️✅️✅️✅️
 
 local function GetWallRaycastResult()
@@ -1081,12 +1091,10 @@ end)
 
 Section:AddParagraph(
     "WARNING",
-    '<u><font color="rgb(255,0,0)">' ..
-    'WARNING: THIS WILL GET YOU BANNED ON MMV OR ANY MM2 COPY<br>' ..
-    'THAT HAS A GOOD ANTICHEAT, AND<br>' ..
-    'I AM NOT GONNA BE RESPONSIBLE<br>' ..
-    'FOR ANY BANS BECAUSE OF THIS FEATURE' ..
-    '</font></u>'
+    'THIS WILL GET YOU BANNED ON MMV OR ANY MM2 COPY' ..
+    ' THAT HAS A GOOD ANTICHEAT, AND' ..
+    ' I AM NOT GONNA BE RESPONSIBLE' ..
+    ' FOR ANY BANS BECAUSE OF THIS FEATURE'
 )
 
 MyOwnSection:AddSlider("Votes Amount", 1, 20, SelectedRespawnAmount, function(value)
@@ -2038,6 +2046,364 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
+
+fun_section:AddLabel("<u><font color='rgb(255,255,0)'>Trails: Use RGB Only To Add custom colors!</font></u>")
+
+local function twopointseq(c1, c2)
+    c2 = c2 or c1
+    return ColorSequence.new({
+        ColorSequenceKeypoint.new(0, c1),
+        ColorSequenceKeypoint.new(1, c2)
+    })
+end
+
+local colors = {
+    ["Red"] = twopointseq(Color3.fromRGB(255,0,0)),
+    ["Orange"] = twopointseq(Color3.fromRGB(255,165,0)),
+    ["Yellow"] = twopointseq(Color3.fromRGB(255,255,0)),
+    ["Green"] = twopointseq(Color3.fromRGB(0,255,0)),
+    ["Dark Green"] = twopointseq(Color3.fromRGB(0,128,0)),
+    ["Cyan"] = twopointseq(Color3.fromRGB(0,255,255)),
+    ["Light Blue"] = twopointseq(Color3.fromRGB(173,216,230)),
+    ["Blue"] = twopointseq(Color3.fromRGB(0,0,255)),
+    ["Dark Blue"] = twopointseq(Color3.fromRGB(0,0,139)),
+    ["Purple"] = twopointseq(Color3.fromRGB(128,0,128)),
+    ["Pink"] = twopointseq(Color3.fromRGB(255,192,203)),
+    ["Red, Orange"] = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(255,0,0)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255,165,0))}),
+    ["Yellow, Green"] = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(255,255,0)), ColorSequenceKeypoint.new(1, Color3.fromRGB(0,255,0))}),
+    ["Cyan, Light Blue"] = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(0,255,255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(173,216,230))}),
+    ["Blue, Dark Blue"] = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,139))}),
+    ["Purple, Pink"] = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(128,0,128)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255,192,203))}),
+    ["Rainbow"] = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255,0,0)),
+        ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255,165,0)),
+        ColorSequenceKeypoint.new(0.34, Color3.fromRGB(255,255,0)),
+        ColorSequenceKeypoint.new(0.51, Color3.fromRGB(0,255,0)),
+        ColorSequenceKeypoint.new(0.68, Color3.fromRGB(0,255,255)),
+        ColorSequenceKeypoint.new(0.85, Color3.fromRGB(0,0,255)),
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(128,0,128))
+    }),
+    ["Black"] = twopointseq(Color3.fromRGB(0,0,0)),
+    ["Dark Gray"] = twopointseq(Color3.fromRGB(64,64,64)),
+    ["Light Gray"] = twopointseq(Color3.fromRGB(192,192,192)),
+    ["White"] = twopointseq(Color3.fromRGB(255,255,255)),
+    ["Black, Dark Gray"] = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,0)), ColorSequenceKeypoint.new(1, Color3.fromRGB(64,64,64))}),
+    ["Light Gray, White"] = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(192,192,192)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255,255,255))}),
+    ["Black, White"] = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,0)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255,255,255))}),
+    ["Dark Gray, Light Gray"] = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(64,64,64)), ColorSequenceKeypoint.new(1, Color3.fromRGB(192,192,192))})
+}
+
+local dropdown_options = {
+    "Red","Orange","Yellow","Green","Dark Green","Cyan","Light Blue","Blue","Dark Blue","Purple","Pink",
+    "Red, Orange","Yellow, Green","Cyan, Light Blue","Blue, Dark Blue","Purple, Pink","Rainbow",
+    "Black","Dark Gray","Light Gray","White",
+    "Black, Dark Gray","Light Gray, White","Black, White","Dark Gray, Light Gray"
+}
+
+local function ensureattachments(part)
+    if not part then return nil, nil end
+    if not part:IsA("BasePart") then
+        if part:IsA("Model") then
+            part = part:FindFirstChild("HumanoidRootPart") or part:FindFirstChildWhichIsA("BasePart")
+        end
+        if not part then return nil, nil end
+    end
+    local a0 = part:FindFirstChild("TrailAttachment0")
+    if not a0 then
+        a0 = Instance.new("Attachment")
+        a0.Name = "TrailAttachment0"
+        a0.Position = Vector3.new(0, 1, 0)
+        a0.Parent = part
+    else
+        pcall(function() a0.Position = Vector3.new(0, 1, 0) end)
+    end
+    local a1 = part:FindFirstChild("TrailAttachment1")
+    if not a1 then
+        a1 = Instance.new("Attachment")
+        a1.Name = "TrailAttachment1"
+        a1.Position = Vector3.new(0, -1, 0)
+        a1.Parent = part
+    else
+        pcall(function() a1.Position = Vector3.new(0, -1, 0) end)
+    end
+    return a0, a1
+end
+
+local function destroytrail()
+    if trail then pcall(function() trail:Destroy() end) end
+    trail = nil
+end
+
+local function createtrail(customcolorsequence)
+    if not hrp then return end
+    destroytrail()
+    local a0, a1 = ensureattachments(hrp)
+    if not a0 or not a1 then return end
+    local t = Instance.new("Trail")
+    pcall(function()
+        t.Attachment0 = a0
+        t.Attachment1 = a1
+    end)
+    pcall(function() t.Lifetime = advanced_props.lifetime or 1 end)
+    pcall(function() t.Transparency = NumberSequence.new(0, 1) end)
+    local cs = customcolorsequence or colors[selected_color_name] or twopointseq(default_color3)
+    pcall(function() t.Color = cs end)
+    pcall(function() t.FaceCamera = advanced_props.facecamera and true or false end)
+    pcall(function() t.WidthScale = NumberSequence.new({
+        NumberSequenceKeypoint.new(0, advanced_props.widthscale or 1),
+        NumberSequenceKeypoint.new(1, advanced_props.widthscale or 1)
+    }) end)
+    pcall(function() t.Brightness = advanced_props.brightness or 1 end)
+    if advanced_props.minlength then pcall(function() t.MinLength = advanced_props.minlength end) end
+    if advanced_props.maxlength then pcall(function() t.MaxLength = advanced_props.maxlength end) end
+    pcall(function() t.Parent = hrp end)
+    trail = t
+end
+
+local function buildcustomcolorsequence()
+    local enabled_list = {}
+    for i = 1, 5 do
+        local key = "color" .. i
+        if enable_custom[key] and custom_colors[key] then
+            table.insert(enabled_list, { color = custom_colors[key] })
+        end
+    end
+    if #enabled_list == 0 then
+        return colors[selected_color_name] or twopointseq(default_color3)
+    end
+    local seq = {}
+    if #enabled_list == 1 then
+        local c = enabled_list[1].color
+        table.insert(seq, ColorSequenceKeypoint.new(0, c))
+        table.insert(seq, ColorSequenceKeypoint.new(1, c))
+    else
+        local n = #enabled_list
+        for i, entry in ipairs(enabled_list) do
+            local pos = 0
+            if n > 1 then pos = (i - 1) / (n - 1) end
+            table.insert(seq, ColorSequenceKeypoint.new(pos, entry.color))
+        end
+    end
+    return ColorSequence.new(seq)
+end
+
+local function applycustomcolors()
+    local cs = buildcustomcolorsequence()
+    if trail then pcall(function() trail.Color = cs end) else createtrail(cs) end
+end
+
+local function parsegradientstring(text)
+    if type(text) ~= "string" then return nil end
+    local parts = {}
+    for seg in string.gmatch(text, "[^;]+") do
+        local r, g, b = seg:match("(%d+),(%d+),(%d+)")
+        if r and g and b then
+            local rn, gn, bn = tonumber(r), tonumber(g), tonumber(b)
+            if rn and gn and bn then
+                rn = math.clamp(rn, 0, 255)
+                gn = math.clamp(gn, 0, 255)
+                bn = math.clamp(bn, 0, 255)
+                table.insert(parts, Color3.fromRGB(rn, gn, bn))
+            end
+        end
+    end
+    if #parts < 2 then return nil end
+    local seq = {}
+    local denom = (#parts - 1)
+    if denom < 1 then denom = 1 end
+    for i, color in ipairs(parts) do
+        local pos = (i - 1) / denom
+        table.insert(seq, ColorSequenceKeypoint.new(pos, color))
+    end
+    return ColorSequence.new(seq)
+end
+
+local function applycustomgradient(text)
+    local cs = parsegradientstring(text)
+    if not cs then return end
+    if trail then pcall(function() trail.Color = cs end) else createtrail(cs) end
+end
+
+fun_section:AddDropdown("Predefined Trail", dropdown_options, function(value)
+    if type(value) == "string" and colors[value] then
+        selected_color_name = value
+        if trail then pcall(function() trail.Color = colors[selected_color_name] end) end
+    end
+end)
+
+fun_section:AddToggle("Toggle Trail", function(state)
+    enabled = state and true or false
+    if enabled then createtrail() else destroytrail() end
+end)
+
+fun_section:AddLabel("<u><font color='rgb(0,255,0)'>Color 1 = Start, Color 2 = Middle, Color 3 = End</font></u>")
+
+for i = 1, 5 do
+    local key = "color" .. tostring(i)
+    fun_section:AddToggle("Enable " .. key, function(state)
+        enable_custom[key] = state and true or false
+        if enabled then pcall(function() applycustomcolors() end) end
+    end)
+    fun_section:AddTextBox(key .. " Color (RGB)", function(text)
+        if type(text) ~= "string" then return end
+        local r, g, b = text:match("(%d+),(%d+),(%d+)")
+        if r and g and b then
+            local rn, gn, bn = tonumber(r), tonumber(g), tonumber(b)
+            if rn and gn and bn then
+                rn = math.clamp(rn, 0, 255)
+                gn = math.clamp(gn, 0, 255)
+                bn = math.clamp(bn, 0, 255)
+                custom_colors[key] = Color3.fromRGB(rn, gn, bn)
+                if enabled then pcall(function() applycustomcolors() end) end
+            end
+        end
+    end)
+end
+
+fun_section:AddButton("Apply Custom Colors", function() applycustomcolors() end)
+
+fun_section:AddTextBox("Custom Gradient", function(text) fun_section._internal.customgradienttext = text end)
+fun_section:AddButton("Apply Custom Gradient", function()
+    local txt = fun_section._internal.customgradienttext
+    if txt then applycustomgradient(txt) end
+end)
+
+fun_section:AddLabel("<u><font color='rgb(255,0,0)'>Advanced Properties</font></u>")
+
+fun_section:AddSlider("Brightness (0-10)", 0, 10, 1, function(value)
+    advanced_props.brightness = value
+    if trail then pcall(function() trail.Brightness = value end) end
+end)
+
+fun_section:AddToggle("Face Camera", function(state)
+    advanced_props.facecamera = state and true or false
+    if trail then pcall(function() trail.FaceCamera = advanced_props.facecamera end) end
+end)
+
+fun_section:AddSlider("Life Time (1-20)", 1, 20, 1, function(value)
+    advanced_props.lifetime = value
+    if trail then pcall(function() trail.Lifetime = advanced_props.lifetime end) end
+end)
+
+fun_section:AddTextBox("Max Length", function(text)
+    local n = tonumber(text)
+    if n then advanced_props.maxlength = n; if trail then pcall(function() trail.MaxLength = n end) end end
+end)
+
+fun_section:AddTextBox("Min Length", function(text)
+    local n = tonumber(text)
+    if n then advanced_props.minlength = n; if trail then pcall(function() trail.MinLength = n end) end end
+end)
+
+fun_section:AddTextBox("Width Scale", function(text)
+    local n = tonumber(text)
+    if n then
+        advanced_props.widthscale = n
+        if trail then pcall(function() trail.WidthScale = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, n),
+            NumberSequenceKeypoint.new(1, n)
+        }) end) end
+    end
+end)
+
+local saved_folder_root = "GatoAddonPack"
+local saved_folder = saved_folder_root .. "/Saved Colors"
+
+local function list_saved_names()
+    local names = {}
+    if not isfolder(saved_folder_root) then return names end
+    if not isfolder(saved_folder) then return names end
+    local files = listfiles(saved_folder)
+    for _, f in ipairs(files) do
+        local n = f:match("([^/\\]+)%.txt$")
+        if n then table.insert(names, n) end
+    end
+    return names
+end
+
+local saved_dropdown = fun_section:AddDropdown("Saved Custom Colors", list_saved_names(), function(value)
+    fun_section._internal.selected_saved_color = value
+end)
+
+fun_section:AddTextBox("Custom Color Name", function(text) fun_section._internal.custom_color_name = text end)
+
+local function get_enabled_custom_colors_text()
+    local parts = {}
+    for i = 1, 5 do
+        local key = "color" .. i
+        if enable_custom[key] and custom_colors[key] then
+            local c = custom_colors[key]
+            local r = math.floor(c.R * 255 + 0.5)
+            local g = math.floor(c.G * 255 + 0.5)
+            local b = math.floor(c.B * 255 + 0.5)
+            table.insert(parts, string.format("%d,%d,%d", r, g, b))
+        end
+    end
+    return table.concat(parts, ";")
+end
+
+fun_section:AddButton("Save Custom Color", function()
+    local name = fun_section._internal.custom_color_name
+    if not name or name == "" then return end
+    if not isfolder(saved_folder_root) then makefolder(saved_folder_root) end
+    if not isfolder(saved_folder) then makefolder(saved_folder) end
+    local txt = get_enabled_custom_colors_text()
+    if txt == "" then return end
+    local file_path = saved_folder .. "/" .. name .. ".txt"
+    writefile(file_path, txt)
+    local names = list_saved_names()
+    if saved_dropdown and type(saved_dropdown.Refresh) == "function" then saved_dropdown:Refresh(names) end
+end)
+
+fun_section:AddButton("Load Selected Custom Color", function()
+    local name = fun_section._internal.selected_saved_color
+    if not name or name == "" then return end
+    local file_path = saved_folder .. "/" .. name .. ".txt"
+    if not isfile(file_path) then return end
+    local content = readfile(file_path)
+    if not content or content == "" then return end
+    for i = 1, 5 do
+        local key = "color" .. i
+        enable_custom[key] = false
+        custom_colors[key] = nil
+    end
+    local idx = 1
+    for seg in string.gmatch(content, "[^;]+") do
+        if idx > 5 then break end
+        local r, g, b = seg:match("(%d+),(%d+),(%d+)")
+        if r and g and b then
+            local rn, gn, bn = tonumber(r), tonumber(g), tonumber(b)
+            if rn and gn and bn then
+                rn = math.clamp(rn, 0, 255)
+                gn = math.clamp(gn, 0, 255)
+                bn = math.clamp(bn, 0, 255)
+                local key = "color" .. idx
+                custom_colors[key] = Color3.fromRGB(rn, gn, bn)
+                enable_custom[key] = true
+                idx = idx + 1
+            end
+        end
+    end
+    if enabled then pcall(function() applycustomcolors() end) end
+end)
+
+if isfolder(saved_folder) then
+    local names = list_saved_names()
+    if saved_dropdown and type(saved_dropdown.Refresh) == "function" then saved_dropdown:Refresh(names) end
+end
+
+local function oncharacteradded(char)
+    if not (char and char:IsA("Model")) then return end
+    hrp = char:WaitForChild("HumanoidRootPart", 5) or char:FindFirstChild("HumanoidRootPart")
+    if hrp and enabled then createtrail() end
+end
+
+if LocalPlayer then
+    if LocalPlayer.Character then oncharacteradded(LocalPlayer.Character) end
+    LocalPlayer.CharacterAdded:Connect(oncharacteradded)
+end
+
+-- me part 2
 
 warn("[#]: Loaded")
 
