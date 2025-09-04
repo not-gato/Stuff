@@ -1,1 +1,1 @@
-https://github.com/not-gato/Stuff/raw/refs/heads/main/Gato/Addon/Pack/CanImport.odh
+loadstring(game:HttpGet("https://github.com/not-gato/Stuff/raw/refs/heads/main/Files/ImportAddon.lua",true))()
