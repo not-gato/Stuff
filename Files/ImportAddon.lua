@@ -56,6 +56,8 @@ local current_scale = 1
 local buttonsHidden = false
 local uiScaleValue = 1
 
+local deleting = false
+
 local WallhopSection = Shared.AddSection("Wallhop | #1")
 local CamSection = Shared.AddSection("Camera Stretch | #2")
 local ProfileSection = Shared.AddSection("Profile Picture Editor | #3")
@@ -2007,6 +2009,33 @@ fun_section:AddTextBox("Other Bindable Button Scale", function(text)
     if num and num > 0 then
         uiScaleValue = num
         updateButtons()
+    end
+end)
+
+PerformanceSection:AddButton("Disable VFX (Buttons)", function()
+    deleting = not deleting
+end)
+
+local function deleteVFXFromButtons(parent, buttonNames)
+    for _, obj in ipairs(parent:GetChildren()) do
+        for _, name in ipairs(buttonNames) do
+            if obj.Name == name then
+                local vfx = obj:FindFirstChild("VFX")
+                if vfx then
+                    vfx:Destroy()
+                end
+            end
+        end
+        deleteVFXFromButtons(obj, buttonNames)
+    end
+end
+
+RunService.RenderStepped:Connect(function()
+    if deleting then
+        local guiRoot = gethui()
+        if guiRoot then
+            deleteVFXFromButtons(guiRoot, {"застрелить убийцу", "привязываемая кнопка"})
+        end
     end
 end)
 
