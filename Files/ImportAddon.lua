@@ -2012,7 +2012,7 @@ fun_section:AddTextBox("Other Bindable Button Scale", function(text)
     end
 end)
 
-PerformanceSection:AddButton("Disable VFX (Buttons)", function()
+fun_section:AddButton("Disable VFX (Buttons)", function()
     deleting = not deleting
 end)
 
