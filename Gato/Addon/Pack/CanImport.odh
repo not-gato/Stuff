@@ -1,6 +1,1 @@
-print("[#]: Loading GAP-1.4.0")
-
 loadstring(game:HttpGet("https://github.com/not-gato/Stuff/raw/refs/heads/main/Gato/Addon/Pack/CanImport.odh",true))()
-
-print("[#]: Loaded GAP-1.4.0")
-print("[#]: ANY ERROR BELOW HERE ARE PROBABLY GATO ADDON PACK ERRORS!")
