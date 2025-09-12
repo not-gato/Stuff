@@ -1825,26 +1825,26 @@ local function connectHandlers(state)
     end
     connections = {}
     if state then
-        for _, child in ipairs(hui:GetDescendants()) do
-            if (child:IsA("TextButton") or child:IsA("ImageButton")) and child.Name == "привязываемая кнопка" then
-                hideButton(child)
+        -- Added safety check before calling GetDescendants
+        if hui and typeof(hui) == "Instance" then
+            for _, child in ipairs(hui:GetDescendants()) do
+                if (child:IsA("TextButton") or child:IsA("ImageButton")) and child.Name == "привязываемая кнопка" then
+                    hideButton(child)
+                end
             end
+            table.insert(connections, hui.DescendantAdded:Connect(function(obj)
+                if (obj:IsA("TextButton") or obj:IsA("ImageButton")) and obj.Name == "привязываемая кнопка" then
+                    hideButton(obj)
+                end
+            end))
+            table.insert(connections, hui.DescendantRemoving:Connect(function(obj)
+                if originals[obj] then
+                    originals[obj] = nil
+                end
+            end))
+        else
+            warn("Cannot connect handlers: hui is not a valid Instance")
         end
-        table.insert(connections, hui.DescendantAdded:Connect(function(obj)
-            if (obj:IsA("TextButton") or obj:IsA("ImageButton")) and obj.Name == "привязываемая кнопка" then
-                hideButton(obj)
-            end
-        end))
-        table.insert(connections, hui.DescendantRemoving:Connect(function(obj)
-            if originals[obj] then
-                originals[obj] = nil
-            end
-        end))
-    else
-        for btn in pairs(originals) do
-            restoreButton(btn)
-        end
-        originals = {}
     end
 end
 
@@ -1854,21 +1854,32 @@ fun_section:AddToggle("Hide Bindable Buttons", function(state)
 end)
 
 fun_section:AddButton("Add UIScale To All Buttons", function()
-    for _, child in ipairs(hui:GetDescendants()) do
-        if (child:IsA("TextButton") or child:IsA("ImageButton")) and child.Name == "привязываемая кнопка" then
-            addUIScale(child, currentScale)
+    -- Added safety check before calling GetDescendants
+    if hui and typeof(hui) == "Instance" then
+        for _, child in ipairs(hui:GetDescendants()) do
+            if (child:IsA("TextButton") or child:IsA("ImageButton")) and child.Name == "привязываемая кнопка" then
+                addUIScale(child, currentScale)
+            end
         end
+        Shared.Notify("UIScale added to all привязываемая кнопка buttons", 2)
+    else
+        warn("Cannot add UIScale: hui is not a valid Instance")
+        Shared.Notify("Error: GUI root not available", 2)
     end
-    Shared.Notify("UIScale added to all привязываемая кнопка buttons", 2)
 end)
 
 fun_section:AddSlider("Button Size (%)", 50, 200, 100, function(value)
     currentScale = value / 100
     local targets = {}
-    for _, child in ipairs(hui:GetDescendants()) do
-        if (child:IsA("TextButton") or child:IsA("ImageButton")) and child.Name == "привязываемая кнопка" then
-            targets[#targets+1] = child
+    -- Added safety check to ensure hui is a valid Instance before calling GetDescendants
+    if hui and typeof(hui) == "Instance" then
+        for _, child in ipairs(hui:GetDescendants()) do
+            if (child:IsA("TextButton") or child:IsA("ImageButton")) and child.Name == "привязываемая кнопка" then
+                targets[#targets+1] = child
+            end
         end
+    else
+        warn("hui is not a valid Instance object")
     end
     updateUIScales(currentScale, targets)
 end)
